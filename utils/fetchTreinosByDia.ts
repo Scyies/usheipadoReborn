@@ -1,0 +1,38 @@
+import { Dispatch, SetStateAction } from "react";
+import { Dias } from "../pages";
+import { supabase } from "../pages/supa";
+
+export interface Treino {
+  id: string
+  name: string
+  reps?: string
+  sets?: number
+  diasId?: string
+}
+
+interface TreinoDataProps {
+  setter: Dispatch<SetStateAction<Treino[]>>
+  diasId: string
+}
+
+export async function fetchTreinosByDia(setter: Dispatch<SetStateAction<Treino[]>>, diasId: string) {
+  const { data, error } = await supabase.from("Treinos").select("name, sets, reps, id").eq('diasId', diasId);
+
+  if (error) {
+    console.log(error.message);
+  }
+  if (data) {
+    setter(data);
+  }
+}
+
+export async function fetchTreinosNameByDia(setter: Dispatch<SetStateAction<Treino[]>>, diasId: string) {
+  const { data, error } = await supabase.from("Treinos").select("name, id").eq('diasId', diasId);
+
+  if (error) {
+    console.log(error.message);
+  }
+  if (data) {
+    setter(data);
+  }
+}
