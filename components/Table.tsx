@@ -16,6 +16,8 @@ export default function Table() {
   const [tableTreinos, setTableTreinos] = useState<Treino[]>([])
   const [diasData, setDiasData] = useState<Dias[]>([]);
 
+  console.log(tableTreinos);
+
   useEffect(() => {
     fetchTreinosByDia(setTableTreinos, selectRecoilValue)
     fetchDiasData(setDiasData);

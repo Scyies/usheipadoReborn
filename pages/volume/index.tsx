@@ -25,7 +25,7 @@ export default function Volume() {
     const formData = new FormData(event.target as HTMLFormElement);
     const input = Object.fromEntries(formData);
 
-    const totalVolume = Number(input.vol) * Number(input.sets)
+    const totalVolume = Number(input.vol) * Number(input.reps) * Number(input.sets)
 
     const volumeInput = {
       vol: Math.round(totalVolume),
@@ -59,8 +59,7 @@ export default function Volume() {
     <>
       <main className="mx-6 mt-8 flex justify-center flex-col">
         <h1 className="text-center text-black text-sm mb-8">
-          Insira a média de peso que utilizou durante as séries e o número de
-          séries.
+          Insira a média do peso utilizado, o número médio de repetições e as séries.
         </h1>
         <div className="self-center">
           <Select
@@ -74,7 +73,7 @@ export default function Volume() {
           onSubmit={handleNovoVolume}
           className="flex flex-col mt-8 place-items-center mb-8"
         >
-          <div className="flex w-full justify-between mb-6">
+          <div className="flex flex-col items-center gap-8 w-full justify-between mb-6">
             <Select
               selectData={treinoSelectState}
               defaultOptionValue="Exercício"
@@ -82,19 +81,27 @@ export default function Volume() {
               value={treinoSelect}
               name="treinoId"
             />
-            <div className="flex">
-              <div className="mr-4">
+            <div className="grid grid-cols-3 gap-4 w-full text-center mb-4">
+              <div className="w-full">
                 <Input
-                  placeholder="Vol"
-                  className="bg-black text-white rounded-full px-4 py-2 text-center w-[66px]"
+                  placeholder="Peso"
+                  className="bg-black text-white rounded-full px-4 py-2 text-center w-full"
                   name="vol"
                   autoComplete="off"
                 />
               </div>
               <div>
                 <Input
+                  placeholder="Reps"
+                  className="bg-black text-white rounded-full px-4 py-2 text-center w-full"
+                  name="reps"
+                  autoComplete="off"
+                />
+              </div>
+              <div>
+                <Input
                   placeholder="Sets"
-                  className="bg-black text-white rounded-full px-4 py-2 text-center w-[66px]"
+                  className="bg-black text-white rounded-full px-4 py-2 text-center w-full"
                   name="sets"
                   autoComplete="off"
                 />

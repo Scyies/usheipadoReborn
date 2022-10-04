@@ -1,6 +1,7 @@
 import Link from "next/link";
 import React from "react";
 import classNames from "classnames";
+import { House, Barbell, ChartLine, PencilSimpleLine, Calculator } from "phosphor-react";
 
 interface SideProps {
   status: "open" | "closed";
@@ -19,32 +20,34 @@ export default function SideBar({ status }: SideProps) {
       )}
       // onBlur={onBlur}
     >
-      <section className="flex flex-col justify-center text-center">
-        <Link href="/">
-          <a className="text-black border-t-2 border-b-2 border-black">Home</a>
+      <section className="flex flex-col justify-center text-center gap-4">
+        <Link href="/home">
+          <a className="text-white bg-black p-1 rounded-md flex justify-center gap-2 items-center">
+            <House size={22} />
+            Home
+          </a>
         </Link>
         <Link href="/">
-          <a className="text-black border-t-2 border-b-2 border-black mt-8">
+          <a className="text-white bg-black p-1 rounded-md flex justify-center gap-2 items-center">
+            <Calculator size={22} />
             BF Calculator
           </a>
         </Link>
         <Link href="/volume">
-          <a className="text-black border-t-2 border-b-2 border-black mt-8">
+          <a className="text-white bg-black p-1 rounded-md flex justify-center gap-2 items-center">
+            <Barbell size={22} />
             Volumes
           </a>
         </Link>
-        <Link href="/">
-          <a className="text-black border-t-2 border-b-2 border-black mt-8">
-            Calorias
-          </a>
-        </Link>
         <Link href="/graficos">
-          <a className="text-black border-t-2 border-b-2 border-black mt-8">
+          <a className="text-white bg-black p-1 rounded-md flex justify-center gap-2 items-center">
+            <ChartLine size={22} />
             Gráficos
           </a>
         </Link>
         <Link href="/edit-treino">
-          <a className="text-black border-t-2 border-b-2 border-black mt-8">
+          <a className="text-white bg-black p-1 rounded-md flex justify-center gap-2 items-center">
+            <PencilSimpleLine size={22} />
             Editar Treinos
           </a>
         </Link>

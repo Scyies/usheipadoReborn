@@ -1,8 +1,8 @@
 import type { NextPage } from "next";
 import Head from "next/head";
-import Link from "next/link";
 import Button from "../components/Button";
-import Table from "../components/Table";
+import Input from "../components/Input";
+import { supabase } from "./supa";
 
 export type Dias = {
   id: string;
@@ -11,6 +11,32 @@ export type Dias = {
 };
 
 const Home: NextPage = () => {
+
+  async function handleSignIn(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    
+    const formData = new FormData(event.target as HTMLFormElement);
+    const input = Object.fromEntries(formData);
+
+
+    // const { user, session, error } = await supabase.auth.signIn({
+    //   email: String(input.email),
+    //   password: String(input.password),
+    // })
+
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: String(input.email),
+      password: String(input.password),
+    })
+
+    if(data) {
+      console.log(data);
+    }
+    if(error) {
+      console.log(error);
+    }
+    
+  }
  
   return (
     <div>
@@ -21,17 +47,14 @@ const Home: NextPage = () => {
       </Head>
 
       <>
-        <main className="mx-6 mt-8">
-          <div className="flex justify-end">
-            <Link href="/novo-treino" passHref>
-              <a className="mb-8">
-                <Button>Novo treino</Button>
-              </a>
-            </Link>
-          </div>
-          <section className="flex flex-col justify-center">
-            <Table />
-          </section>
+        <main className="mx-6 mt-8 flex flex-col justify-center text-center">
+          <form onSubmit={handleSignIn} className="flex flex-col gap-4">
+            <label htmlFor="" className="font-bold">e-mail</label>
+            <Input name="email" />
+            <label htmlFor="" className="font-bold">senha</label>
+            <Input name="senha" type="password" />
+            <Button type="submit">Entrar</Button>
+          </form>
         </main>
       </>
     </div>

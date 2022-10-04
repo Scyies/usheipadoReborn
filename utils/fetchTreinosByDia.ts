@@ -1,6 +1,7 @@
 import { Dispatch, SetStateAction } from "react";
 import { Dias } from "../pages";
 import { supabase } from "../pages/supa";
+import { sortTreinoByCreation } from "./sortTreinosByCreation";
 
 export interface Treino {
   id: string
@@ -8,6 +9,7 @@ export interface Treino {
   reps?: string
   sets?: number
   diasId?: string
+  created_at?: string | Date
 }
 
 interface TreinoDataProps {
@@ -16,13 +18,13 @@ interface TreinoDataProps {
 }
 
 export async function fetchTreinosByDia(setter: Dispatch<SetStateAction<Treino[]>>, diasId: string) {
-  const { data, error } = await supabase.from("Treinos").select("name, sets, reps, id").eq('diasId', diasId);
+  const { data, error } = await supabase.from("Treinos").select("name, sets, reps, id, created_at").eq('diasId', diasId);
 
   if (error) {
     console.log(error.message);
   }
   if (data) {
-    setter(data);
+    setter(sortTreinoByCreation(data));
   }
 }
 

@@ -24,7 +24,7 @@ export default function Select({
       {selectData &&
         selectData.map((dia: Dias | Treino) => (
           <option key={dia.id} value={dia.id}>
-            {dia.name?.toUpperCase()}
+            {dia?.name}
           </option>
         ))}
     </select>

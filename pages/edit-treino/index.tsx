@@ -41,8 +41,6 @@ export default function EditTreino() {
     setInputFields(data);
   }
 
-  console.log(toggleEdit);
-
   function addFieldsByTreinos(editableTreino: Treino[]) {
     let newField: TreinoInput[] = [];
     editableTreino.map((treino) => {
@@ -87,6 +85,14 @@ export default function EditTreino() {
     }
   }
 
+  function toggleEditor(index: number) {
+    if(toggleEdit === null) {
+      setToggleEdit(index)
+    } else {
+      setToggleEdit(null)
+    }
+  }
+
   useEffect(() => {
     fetchDiasData(setDiasData);
   }, []);
@@ -111,7 +117,7 @@ export default function EditTreino() {
         {selectRecoilValue.length > 0 &&
           inputFields.map((input, index) => (
             <div className={classNames("grid grid-cols-6 gap-4 mb-8 items-center p-1", {
-              "border border-black rounded-full": toggleEdit == index
+              "bg-black/30 rounded-full": toggleEdit == index
             })} key={index}>
               <input
                 className="col-span-2 bg-black text-white rounded-full px-4 py-2 text-center"
@@ -134,8 +140,11 @@ export default function EditTreino() {
                 value={input.sets}
                 onChange={(event) => handleFormChange(index, event)}
               />
-              <Button className="text-white h-[30px] w-[30px] hover:bg-black/30 rounded-full p-1 mx-auto"
-                onClick={event => setToggleEdit(index)}
+              <Button
+                onClick={() => toggleEditor(index)}
+                className={classNames("text-white h-[30px] w-[30px] hover:bg-black/30 rounded-full p-1 mx-auto", {
+                  "bg-black/30 rounded-full": toggleEdit == index
+                })}
               >
                 <Image src={edit} alt="" />
               </Button>

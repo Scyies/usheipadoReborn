@@ -26,7 +26,9 @@ export default function Charts() {
   
   useEffect(() => {
     fetchDiasData(setDiasData);
-    fetchTreinosNameByDia(setTreinoSelectState, selectRecoilValue);
+    if(selectRecoilValue.length > 0) {
+      fetchTreinosNameByDia(setTreinoSelectState, selectRecoilValue);
+    }
     if (treinoSelect.length > 0) {
       fetchVolumeByTreino(setVolumeData, treinoSelect);
     }
