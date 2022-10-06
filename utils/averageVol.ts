@@ -11,5 +11,5 @@ export function averageVol(volumeData: Volume[]) {
   const sum = volArr.length > 0 && volArr.reduce((accumulator, value) => {
     return accumulator + value
   })
-  return Math.round(Number(sum) / length)
+  return String(Math.round(Number(sum) / length))
 }

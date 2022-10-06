@@ -5,23 +5,34 @@ import Select from "./Select";
 import { useSetRecoilState, useRecoilValue } from "recoil";
 import { fetchTreinosByDia, Treino } from "../utils/fetchTreinosByDia";
 import { fetchDiasData } from "../utils/fetchDias";
+import { supabase } from "../pages/supa";
+import useGetUserInfo from "../utils/useGetUserInfo";
+import { userId } from "../atom/atom";
 
 interface Props {
-  diasData: Dias[]
+  diasData: Dias[];
+}
+
+interface User {
+  id: string
+  email: string
+  aud: string
+  role: string
 }
 
 export default function Table() {
   const setDiasSelect = useSetRecoilState(diasSelectState);
   const selectRecoilValue = useRecoilValue(diasSelectState);
-  const [tableTreinos, setTableTreinos] = useState<Treino[]>([])
+  const [tableTreinos, setTableTreinos] = useState<Treino[]>([]);
   const [diasData, setDiasData] = useState<Dias[]>([]);
-
-  console.log(tableTreinos);
-
+  const userIdValue: string = useRecoilValue(userId);
+  
   useEffect(() => {
-    fetchTreinosByDia(setTableTreinos, selectRecoilValue)
+    if (userId) {
+      fetchTreinosByDia(setTableTreinos, selectRecoilValue, userIdValue);
+    }
     fetchDiasData(setDiasData);
-  }, [selectRecoilValue])
+  }, [selectRecoilValue, userIdValue]);
   return (
     <>
       <div className="self-center mb-8">

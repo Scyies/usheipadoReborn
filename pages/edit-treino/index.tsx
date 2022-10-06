@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { Dias } from "..";
-import { diasSelectState } from "../../atom/atom";
+import { diasSelectState, userId } from "../../atom/atom";
 import Button from "../../components/Button";
 import EditRow from "../../components/EditRow";
 import Select from "../../components/Select";
@@ -27,6 +27,8 @@ export default function EditTreino() {
   const setDiasSelect = useSetRecoilState(diasSelectState);
   const selectRecoilValue = useRecoilValue(diasSelectState);
   const [editableTreino, setEditableTreino] = useState<Treino[]>([]);
+
+  const userIdValue = useRecoilValue(userId);
 
   const [inputFields, setInputFields] = useState<TreinoInput[]>([]);
 
@@ -97,8 +99,8 @@ export default function EditTreino() {
     fetchDiasData(setDiasData);
   }, []);
   useEffect(() => {
-    fetchTreinosByDia(setEditableTreino, selectRecoilValue);
-  }, [selectRecoilValue]);
+    fetchTreinosByDia(setEditableTreino, selectRecoilValue, userIdValue);
+  }, [selectRecoilValue, userIdValue]);
   useEffect(() => {
     addFieldsByTreinos(editableTreino);
   }, [editableTreino]);

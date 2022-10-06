@@ -1,7 +1,10 @@
 import Link from "next/link";
 import React from "react";
 import classNames from "classnames";
-import { House, Barbell, ChartLine, PencilSimpleLine, Calculator } from "phosphor-react";
+import { House, Barbell, ChartLine, PencilSimpleLine, Calculator, SignOut } from "phosphor-react";
+import Button from "./Button";
+import { supabase } from "../pages/supa";
+import { handleAuth } from "@supabase/auth-helpers-nextjs";
 
 interface SideProps {
   status: "open" | "closed";
@@ -9,6 +12,16 @@ interface SideProps {
 }
 
 export default function SideBar({ status }: SideProps) {
+  async function signOut() {
+    // const { error } = await supabase.auth.signOut();
+    // if (error) {
+    //   console.error(error);
+    // }
+  }
+  const logout = handleAuth()
+  supabase.auth.onAuthStateChange((event, session) => {
+    console.log(event, session);
+  })
   return (
     <aside
       className={classNames(
@@ -51,6 +64,12 @@ export default function SideBar({ status }: SideProps) {
             Editar Treinos
           </a>
         </Link>
+        <Button className="text-white bg-black p-1 rounded-md flex justify-center gap-2 items-center"
+          onClick={() => logout}
+        >
+          <SignOut size={22} />
+          Sair
+        </Button>
       </section>
     </aside>
   );

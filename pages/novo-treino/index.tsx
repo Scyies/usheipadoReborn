@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { diasSelectState } from "../../atom/atom";
+import { diasSelectState, userId } from "../../atom/atom";
 import Header from "../../components/Header";
 import Select from "../../components/Select";
 import { useSetRecoilState, useRecoilValue } from "recoil";
@@ -14,6 +14,7 @@ export default function NovoTreino() {
   const setDiasSelect = useSetRecoilState(diasSelectState);
   const selectRecoilValue = useRecoilValue(diasSelectState);
   const [diasData, setDiasData] = useState<Dias[]>([]);
+  const userIdValue = useRecoilValue(userId);
 
   async function handleNovoTreino(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -27,11 +28,12 @@ export default function NovoTreino() {
         reps: String(input.reps),
         sets: Number(input.sets),
         diasId: String(input.diasId),
+        user_id: userIdValue
       };
 
       const { data, error } = await supabase
         .from("Treinos")
-        .insert([{ name: treinoInput.name, reps: treinoInput.reps, sets: treinoInput.sets, diasId: treinoInput.diasId }]);
+        .insert([{ name: treinoInput.name, reps: treinoInput.reps, sets: treinoInput.sets, diasId: treinoInput.diasId, user_id: treinoInput.user_id }]);
 
       if(error) {
         console.log(error);

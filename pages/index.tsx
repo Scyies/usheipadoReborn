@@ -1,5 +1,8 @@
+import classNames from "classnames";
 import type { NextPage } from "next";
 import Head from "next/head";
+import { useRouter } from "next/router";
+import { useState } from "react";
 import Button from "../components/Button";
 import Input from "../components/Input";
 import { supabase } from "./supa";
@@ -11,33 +14,52 @@ export type Dias = {
 };
 
 const Home: NextPage = () => {
+  const [formType, setFormType] = useState<"login" | "sigin">("login");
+
+  const router = useRouter();
 
   async function handleSignIn(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    
+
     const formData = new FormData(event.target as HTMLFormElement);
     const input = Object.fromEntries(formData);
 
+    if (formType === "sigin") {
+      const { data, error } = await supabase.auth.signUp({
+        email: String(input.email),
+        password: String(input.password),
+        options: {
+          data: {
+            name: String(input.name),
+          },
+        },
+      });
 
-    // const { user, session, error } = await supabase.auth.signIn({
-    //   email: String(input.email),
-    //   password: String(input.password),
-    // })
-
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email: String(input.email),
-      password: String(input.password),
-    })
-
-    if(data) {
-      console.log(data);
+      if (data) {
+        console.log(data);
+        router.push("/home");
+      }
+      if (error) {
+        console.log(error);
+      }
     }
-    if(error) {
-      console.log(error);
+
+    if (formType === "login") {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: String(input.email),
+        password: String(input.password),
+      });
+
+      if (data) {
+        console.log(data);
+        router.push("/home");
+      }
+      if (error) {
+        console.log(error);
+      }
     }
-    
   }
- 
+
   return (
     <div>
       <Head>
@@ -48,13 +70,43 @@ const Home: NextPage = () => {
 
       <>
         <main className="mx-6 mt-8 flex flex-col justify-center text-center">
-          <form onSubmit={handleSignIn} className="flex flex-col gap-4">
-            <label htmlFor="" className="font-bold">e-mail</label>
-            <Input name="email" />
-            <label htmlFor="" className="font-bold">senha</label>
-            <Input name="senha" type="password" />
-            <Button type="submit">Entrar</Button>
-          </form>
+          <div className="relative text-black font-bold flex gap-4">
+            <p className="z-20 text-black" onClick={() => setFormType("login")}>
+              Entrar
+            </p>
+            <p className="z-20 text-black" onClick={() => setFormType("sigin")}>
+              Cadastrar
+            </p>
+          </div>
+          {formType === "login" ? (
+            <form onSubmit={handleSignIn} className="flex flex-col gap-4">
+              <label htmlFor="" className="font-bold text-black">
+                E-mail
+              </label>
+              <Input name="email" autoComplete="off" />
+              <label htmlFor="" className="font-bold text-black">
+                Senha
+              </label>
+              <Input name="senha" type="password" autoComplete="off" />
+              <Button type="submit">Entrar</Button>
+            </form>
+          ) : (
+            <form onSubmit={handleSignIn} className="flex flex-col gap-4">
+              <label htmlFor="" className="font-bold text-black">
+                Nome
+              </label>
+              <Input name="text" autoComplete="off" />
+              <label htmlFor="" className="font-bold text-black">
+                E-mail
+              </label>
+              <Input name="email" autoComplete="off" />
+              <label htmlFor="" className="font-bold text-black">
+                Senha
+              </label>
+              <Input name="senha" type="password" autoComplete="off" />
+              <Button type="submit">Entrar</Button>
+            </form>
+          )}
         </main>
       </>
     </div>
