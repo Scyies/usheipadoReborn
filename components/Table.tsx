@@ -28,7 +28,7 @@ export default function Table() {
   const userIdValue: string = useRecoilValue(userId);
   
   useEffect(() => {
-    if (userId) {
+    if (userIdValue) {
       fetchTreinosByDia(setTableTreinos, selectRecoilValue, userIdValue);
     }
     fetchDiasData(setDiasData);

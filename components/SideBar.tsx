@@ -5,6 +5,10 @@ import { House, Barbell, ChartLine, PencilSimpleLine, Calculator, SignOut } from
 import Button from "./Button";
 import { supabase } from "../pages/supa";
 import { handleAuth } from "@supabase/auth-helpers-nextjs";
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import { userId } from "../atom/atom";
+import { useRouter } from "next/router";
+import { toast } from "react-toastify";
 
 interface SideProps {
   status: "open" | "closed";
@@ -12,16 +16,19 @@ interface SideProps {
 }
 
 export default function SideBar({ status }: SideProps) {
+  const userInfo = useRecoilValue(userId)
+  const setLoggedUser = useSetRecoilState(userId)
+  const router = useRouter();
   async function signOut() {
-    // const { error } = await supabase.auth.signOut();
-    // if (error) {
-    //   console.error(error);
-    // }
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      console.error(error);
+      return
+    }
+    setLoggedUser("")
+    toast.success("Usuário desconectado com sucesso!")
+    router.push("/");
   }
-  const logout = handleAuth()
-  supabase.auth.onAuthStateChange((event, session) => {
-    console.log(event, session);
-  })
   return (
     <aside
       className={classNames(
@@ -64,12 +71,12 @@ export default function SideBar({ status }: SideProps) {
             Editar Treinos
           </a>
         </Link>
-        <Button className="text-white bg-black p-1 rounded-md flex justify-center gap-2 items-center"
-          onClick={() => logout}
+        {userInfo && <Button className="text-white bg-black p-1 rounded-md flex justify-center gap-2 items-center"
+          onClick={() => signOut()}
         >
           <SignOut size={22} />
           Sair
-        </Button>
+        </Button>}
       </section>
     </aside>
   );

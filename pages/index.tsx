@@ -3,6 +3,9 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useState } from "react";
+import { toast } from "react-toastify";
+import { useSetRecoilState } from "recoil";
+import { userId } from "../atom/atom";
 import Button from "../components/Button";
 import Input from "../components/Input";
 import { supabase } from "./supa";
@@ -15,6 +18,7 @@ export type Dias = {
 
 const Home: NextPage = () => {
   const [formType, setFormType] = useState<"login" | "sigin">("login");
+  const setLoggedUser = useSetRecoilState(userId)
 
   const router = useRouter();
 
@@ -35,12 +39,17 @@ const Home: NextPage = () => {
         },
       });
 
-      if (data) {
-        console.log(data);
-        router.push("/home");
-      }
       if (error) {
         console.log(error);
+        toast.error(error.message);
+        return
+      }
+
+      if (data) {
+        console.log(data);
+        setLoggedUser(data?.user!.id);
+        toast.success("Usuário criado com sucesso!")
+        router.push("/home");
       }
     }
 
@@ -50,12 +59,17 @@ const Home: NextPage = () => {
         password: String(input.password),
       });
 
-      if (data) {
-        console.log(data);
-        router.push("/home");
-      }
       if (error) {
         console.log(error);
+        toast.error(error.message);
+        return
+      }
+
+      if (data) {
+        console.log(data);
+        setLoggedUser(data?.user!.id);
+        toast.success("Login realizado com sucesso!")
+        router.push("/home");
       }
     }
   }

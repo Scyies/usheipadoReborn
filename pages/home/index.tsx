@@ -9,16 +9,18 @@ import { supabase } from "../supa";
 export default function Home() {
   const setUserId = useSetRecoilState(userId);
   const userIdValue: string = useRecoilValue(userId);
-  async function getUser() {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    setUserId(user!['id']);
-    return user!['id'];
-  }
-  getUser();
+  // async function getUser() {
+  //   const {
+  //     data: { user },
+  //   } = await supabase.auth.getUser();
+  //   if(user) {
+  //     setUserId(user!['id']);
+  //   }
+  //   return user!['id'];
+  // }
+  // getUser();
 
-  console.log(userIdValue);
+  // console.log(userIdValue);
   
   return (
     <main className="mx-6 mt-8">

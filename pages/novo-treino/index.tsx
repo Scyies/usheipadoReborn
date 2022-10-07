@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { diasSelectState, userId } from "../../atom/atom";
-import Header from "../../components/Header";
 import Select from "../../components/Select";
 import { useSetRecoilState, useRecoilValue } from "recoil";
 import { fetchDiasData } from "../../utils/fetchDias";
 import { Dias } from "..";
 import Button from "../../components/Button";
-import { Loading } from "../../components/Loading";
 import Input from "../../components/Input";
 import { supabase } from "../supa";
+import { toast } from "react-toastify";
 
 export default function NovoTreino() {
   const setDiasSelect = useSetRecoilState(diasSelectState);
@@ -19,31 +18,32 @@ export default function NovoTreino() {
   async function handleNovoTreino(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    try {
-      const formData = new FormData(event.target as HTMLFormElement);
-      const input = Object.fromEntries(formData);
+    const formData = new FormData(event.target as HTMLFormElement);
+    const input = Object.fromEntries(formData);
 
-      const treinoInput = {
-        name: String(input.name),
-        reps: String(input.reps),
-        sets: Number(input.sets),
-        diasId: String(input.diasId),
-        user_id: userIdValue
-      };
+    const treinoInput = {
+      name: String(input.name),
+      reps: String(input.reps),
+      sets: Number(input.sets),
+      diasId: String(input.diasId),
+      user_id: userIdValue
+    };
 
-      const { data, error } = await supabase
-        .from("Treinos")
-        .insert([{ name: treinoInput.name, reps: treinoInput.reps, sets: treinoInput.sets, diasId: treinoInput.diasId, user_id: treinoInput.user_id }]);
+    if(!treinoInput.name || !treinoInput.reps || !treinoInput.sets || !treinoInput.diasId || !treinoInput.user_id){
+      toast.error("Favor preencher todos os campos!");
+      return
+    }
 
-      if(error) {
-        console.log(error);
-        
-      }
-      if(data) {
-        console.log(data);        
-      }
-    } catch (error: any) {
-      console.error(error);
+    const { data, error } = await supabase
+      .from("Treinos")
+      .insert([{ name: treinoInput.name, reps: treinoInput.reps, sets: treinoInput.sets, diasId: treinoInput.diasId, user_id: treinoInput.user_id }])
+      .select("*")
+
+    if(error) {
+      toast.error(error.message);        
+    }
+    if(data) {
+      toast.success("Treino adicionado com sucesso!");   
     }
   }
 
@@ -83,9 +83,6 @@ export default function NovoTreino() {
           </label>
           <Input placeholder="Ex: 4" name="sets" autoComplete="off" />
         </div>
-        {/* {submitMessage.length > 0 && (
-          <SubmitMessage submitMessage={submitMessage} />
-        )} */}
         <Button type="submit">Adicionar</Button>
       </form>
     </>

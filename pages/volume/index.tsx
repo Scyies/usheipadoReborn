@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { Dias } from "..";
 import { diasSelectState } from "../../atom/atom";
@@ -17,7 +18,6 @@ export default function Volume() {
   const [diasData, setDiasData] = useState<Dias[]>([]);
   const [treinoSelectState, setTreinoSelectState] = useState<Treino[]>([]);
   const [treinoSelect, setTreinoSelect] = useState<string>("");
-  const [submitMessage, setSubmitMessage] = useState<string>("");
 
   async function handleNovoVolume(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -25,29 +25,29 @@ export default function Volume() {
     const formData = new FormData(event.target as HTMLFormElement);
     const input = Object.fromEntries(formData);
 
-    const totalVolume = Number(input.vol) * Number(input.reps) * Number(input.sets)
+    const totalVolume =
+      Number(input.vol) * Number(input.reps) * Number(input.sets);
 
     const volumeInput = {
       vol: Math.round(totalVolume),
       dia: input.dia,
-      treinoId: input.treinoId
-    }
+      treinoId: input.treinoId,
+    };
 
-    const { data, error } = await supabase
-      .from("Volumes")
-      .insert([{
+    const { data, error } = await supabase.from("Volumes").insert([
+      {
         vol: volumeInput.vol,
         dia: volumeInput.dia,
-        treinoId: volumeInput.treinoId
-      }]);
-    
-    if(data) {
-      console.log(data);
-      setSubmitMessage("Volume adicionado com sucesso!");
+        treinoId: volumeInput.treinoId,
+      },
+    ]).select("*")
+
+    if (data) {
+      toast.success("Volume adicionado com sucesso!");
     }
-    if(error) {
+    if (error) {
       console.log(error);
-      setSubmitMessage("Houve um problema:" + error.message);
+      toast.error(error.message);
     }
   }
 
@@ -59,7 +59,8 @@ export default function Volume() {
     <>
       <main className="mx-6 mt-8 flex justify-center flex-col">
         <h1 className="text-center text-black text-sm mb-8">
-          Insira a média do peso utilizado, o número médio de repetições e as séries.
+          Insira a média do peso utilizado, o número médio de repetições e as
+          séries.
         </h1>
         <div className="self-center">
           <Select
@@ -111,9 +112,6 @@ export default function Volume() {
           <div className="mb-8">
             <Input type="date" name="dia" />
           </div>
-          {submitMessage.length > 0 && (
-            <SubmitMessage submitMessage={submitMessage} />
-          )}
           <Button type="submit">Adicionar</Button>
         </form>
       </main>

@@ -11,6 +11,7 @@ import { supabase } from "../supa";
 import edit from "../../assets/edit.svg";
 import Image from "next/image";
 import classNames from "classnames";
+import { toast } from "react-toastify";
 
 interface TreinoInput {
   name: string | undefined;
@@ -61,6 +62,7 @@ export default function EditTreino() {
     event.preventDefault();
 
     if(toggleEdit == null) {
+      toast.error("Favor selecionar o campo a ser alterado!")
       return
     }
 
@@ -74,13 +76,14 @@ export default function EditTreino() {
         })
         .match({
           id: editableTreino[toggleEdit!].id,
-        });
+        }).select("*")
 
       if (data) {
-        console.log(data);
+        toast.success("Treino atualizado com sucesso!");
       }
       if (error) {
         console.log(error);
+        toast.error(error.message);
       }
     } catch (error) {
       console.log(error);
@@ -142,14 +145,14 @@ export default function EditTreino() {
                 value={input.sets}
                 onChange={(event) => handleFormChange(index, event)}
               />
-              <Button
+              <span
                 onClick={() => toggleEditor(index)}
                 className={classNames("text-white h-[30px] w-[30px] hover:bg-black/30 rounded-full p-1 mx-auto", {
                   "bg-black/30 rounded-full": toggleEdit == index
                 })}
               >
                 <Image src={edit} alt="" />
-              </Button>
+              </span>
             </div>
           ))}
 
