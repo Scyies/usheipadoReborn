@@ -1,3 +1,4 @@
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useRecoilValue, useSetRecoilState } from "recoil";
@@ -18,6 +19,7 @@ export default function Volume() {
   const [diasData, setDiasData] = useState<Dias[]>([]);
   const [treinoSelectState, setTreinoSelectState] = useState<Treino[]>([]);
   const [treinoSelect, setTreinoSelect] = useState<string>("");
+  const router = useRouter();
 
   async function handleNovoVolume(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();

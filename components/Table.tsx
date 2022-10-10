@@ -25,13 +25,15 @@ export default function Table() {
   const selectRecoilValue = useRecoilValue(diasSelectState);
   const [tableTreinos, setTableTreinos] = useState<Treino[]>([]);
   const [diasData, setDiasData] = useState<Dias[]>([]);
-  const userIdValue: string = useRecoilValue(userId);
-  
+  const userIdValue = useRecoilValue(userId);
+
+  useEffect(() => {
+    fetchDiasData(setDiasData);
+  }, [])
   useEffect(() => {
     if (userIdValue) {
       fetchTreinosByDia(setTableTreinos, selectRecoilValue, userIdValue);
     }
-    fetchDiasData(setDiasData);
   }, [selectRecoilValue, userIdValue]);
   return (
     <>

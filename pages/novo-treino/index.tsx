@@ -8,12 +8,14 @@ import Button from "../../components/Button";
 import Input from "../../components/Input";
 import { supabase } from "../supa";
 import { toast } from "react-toastify";
+import { useRouter } from "next/router";
 
 export default function NovoTreino() {
   const setDiasSelect = useSetRecoilState(diasSelectState);
   const selectRecoilValue = useRecoilValue(diasSelectState);
   const [diasData, setDiasData] = useState<Dias[]>([]);
   const userIdValue = useRecoilValue(userId);
+  const router = useRouter();
 
   async function handleNovoTreino(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -29,7 +31,7 @@ export default function NovoTreino() {
       user_id: userIdValue
     };
 
-    if(!treinoInput.name || !treinoInput.reps || !treinoInput.sets || !treinoInput.diasId || !treinoInput.user_id){
+    if (!treinoInput.name || !treinoInput.reps || !treinoInput.sets || !treinoInput.diasId || !treinoInput.user_id) {
       toast.error("Favor preencher todos os campos!");
       return
     }
@@ -39,11 +41,11 @@ export default function NovoTreino() {
       .insert([{ name: treinoInput.name, reps: treinoInput.reps, sets: treinoInput.sets, diasId: treinoInput.diasId, user_id: treinoInput.user_id }])
       .select("*")
 
-    if(error) {
-      toast.error(error.message);        
+    if (error) {
+      toast.error(error.message);
     }
-    if(data) {
-      toast.success("Treino adicionado com sucesso!");   
+    if (data) {
+      toast.success("Treino adicionado com sucesso!");
     }
   }
 

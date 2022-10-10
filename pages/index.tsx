@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { useSetRecoilState } from "recoil";
-import { userId } from "../atom/atom";
+import { IToken, userId } from "../atom/atom";
 import Button from "../components/Button";
 import Input from "../components/Input";
 import { supabase } from "./supa";
@@ -47,13 +47,16 @@ const Home: NextPage = () => {
 
       if (data) {
         console.log(data);
-        setLoggedUser(data?.user!.id);
+        const session = localStorage.setItem('token', JSON.stringify(data))
+        setLoggedUser(data['session']?.user.id!);
+
         toast.success("Usuário criado com sucesso!")
         router.push("/home");
       }
     }
 
     if (formType === "login") {
+
       const { data, error } = await supabase.auth.signInWithPassword({
         email: String(input.email),
         password: String(input.password),
@@ -66,8 +69,8 @@ const Home: NextPage = () => {
       }
 
       if (data) {
-        console.log(data);
-        setLoggedUser(data?.user!.id);
+        const session = localStorage.setItem('token', JSON.stringify(data))
+        setLoggedUser(data['session']?.user.id!);
         toast.success("Login realizado com sucesso!")
         router.push("/home");
       }

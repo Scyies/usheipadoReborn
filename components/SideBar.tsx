@@ -25,6 +25,7 @@ export default function SideBar({ status }: SideProps) {
       console.error(error);
       return
     }
+    localStorage.removeItem('token')
     setLoggedUser("")
     toast.success("Usuário desconectado com sucesso!")
     router.push("/");
@@ -38,7 +39,7 @@ export default function SideBar({ status }: SideProps) {
           "translate-x-0": status === "open",
         }
       )}
-      // onBlur={onBlur}
+    // onBlur={onBlur}
     >
       <section className="flex flex-col justify-center text-center gap-4">
         <Link href="/home">
