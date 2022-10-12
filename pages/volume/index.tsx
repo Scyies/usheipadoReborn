@@ -9,7 +9,7 @@ import Input from '../../components/Input';
 import Select from '../../components/Select';
 import { fetchDiasData } from '../../utils/fetchDias';
 import { fetchTreinosNameByDia, Treino } from '../../utils/fetchTreinosByDia';
-import { supabase } from '../supa';
+import { supabase } from '../../supa';
 
 export default function Volume() {
   const setDiasSelect = useSetRecoilState(diasSelectState);

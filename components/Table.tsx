@@ -5,7 +5,7 @@ import Select from './Select';
 import { useSetRecoilState, useRecoilValue } from 'recoil';
 import { fetchTreinosByDia, Treino } from '../utils/fetchTreinosByDia';
 import { fetchDiasData } from '../utils/fetchDias';
-import { supabase } from '../pages/supa';
+import { supabase } from '../supa';
 import useGetUserInfo from '../utils/useGetUserInfo';
 import { userId } from '../atom/atom';
 

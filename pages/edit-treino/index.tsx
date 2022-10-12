@@ -7,7 +7,7 @@ import EditRow from '../../components/EditRow';
 import Select from '../../components/Select';
 import { fetchDiasData } from '../../utils/fetchDias';
 import { fetchTreinosByDia, Treino } from '../../utils/fetchTreinosByDia';
-import { supabase } from '../supa';
+import { supabase } from '../../supa';
 import edit from '../../assets/edit.svg';
 import Image from 'next/image';
 import classNames from 'classnames';

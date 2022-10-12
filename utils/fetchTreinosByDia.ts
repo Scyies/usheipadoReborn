@@ -1,7 +1,7 @@
-import { Dispatch, SetStateAction } from "react";
-import { Dias } from "../pages";
-import { supabase } from "../pages/supa";
-import { sortTreinoByCreation } from "./sortTreinosByCreation";
+import { Dispatch, SetStateAction } from 'react';
+import { Dias } from '../pages';
+import { supabase } from '../supa';
+import { sortTreinoByCreation } from './sortTreinosByCreation';
 
 export interface Treino {
   id: string;
@@ -23,10 +23,10 @@ export async function fetchTreinosByDia(
   userId: string
 ) {
   const { data, error } = await supabase
-    .from("Treinos")
-    .select("name, sets, reps, id, created_at")
-    .eq("diasId", diasId)
-    .eq("user_id", userId);
+    .from('Treinos')
+    .select('name, sets, reps, id, created_at')
+    .eq('diasId', diasId)
+    .eq('user_id', userId);
 
   if (error) {
     console.log(error.message);
@@ -41,9 +41,9 @@ export async function fetchTreinosNameByDia(
   diasId: string
 ) {
   const { data, error } = await supabase
-    .from("Treinos")
-    .select("name, id")
-    .eq("diasId", diasId);
+    .from('Treinos')
+    .select('name, id')
+    .eq('diasId', diasId);
 
   if (error) {
     console.log(error.message);
