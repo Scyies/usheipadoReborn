@@ -1,17 +1,17 @@
-import React, { useEffect, useState } from "react";
-import { useRecoilValue, useSetRecoilState } from "recoil";
-import { Dias } from "..";
-import { diasSelectState, userId } from "../../atom/atom";
-import Button from "../../components/Button";
-import EditRow from "../../components/EditRow";
-import Select from "../../components/Select";
-import { fetchDiasData } from "../../utils/fetchDias";
-import { fetchTreinosByDia, Treino } from "../../utils/fetchTreinosByDia";
-import { supabase } from "../supa";
-import edit from "../../assets/edit.svg";
-import Image from "next/image";
-import classNames from "classnames";
-import { toast } from "react-toastify";
+import React, { useEffect, useState } from 'react';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { Dias } from '..';
+import { diasSelectState, userId } from '../../atom/atom';
+import Button from '../../components/Button';
+import EditRow from '../../components/EditRow';
+import Select from '../../components/Select';
+import { fetchDiasData } from '../../utils/fetchDias';
+import { fetchTreinosByDia, Treino } from '../../utils/fetchTreinosByDia';
+import { supabase } from '../supa';
+import edit from '../../assets/edit.svg';
+import Image from 'next/image';
+import classNames from 'classnames';
+import { toast } from 'react-toastify';
 
 interface TreinoInput {
   name: string | undefined;
@@ -40,9 +40,14 @@ export default function EditTreino() {
     event: React.ChangeEvent<HTMLInputElement>
   ) {
     let data: TreinoInput[] = [...inputFields];
-    data[index][event.target.name] = event.target.value;
+    data[index][event.target.name as keyof TreinoInput] = event.target.value;
     setInputFields(data);
   }
+
+  // function handleFormChange(event) {
+  //   const value = event.target.value;
+  //   setInputFields([...editableTreino, event.target.name: value])
+  // }
 
   function addFieldsByTreinos(editableTreino: Treino[]) {
     let newField: TreinoInput[] = [];
@@ -61,14 +66,14 @@ export default function EditTreino() {
   async function handleTreinoUpdate(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    if(toggleEdit == null) {
-      toast.error("Favor selecionar o campo a ser alterado!")
-      return
+    if (toggleEdit == null) {
+      toast.error('Favor selecionar o campo a ser alterado!');
+      return;
     }
 
     try {
       const { data, error } = await supabase
-        .from("Treinos")
+        .from('Treinos')
         .update({
           name: inputFields[toggleEdit!].name,
           reps: inputFields[toggleEdit!].reps,
@@ -76,10 +81,11 @@ export default function EditTreino() {
         })
         .match({
           id: editableTreino[toggleEdit!].id,
-        }).select("*")
+        })
+        .select('*');
 
       if (data) {
-        toast.success("Treino atualizado com sucesso!");
+        toast.success('Treino atualizado com sucesso!');
       }
       if (error) {
         console.log(error);
@@ -91,10 +97,10 @@ export default function EditTreino() {
   }
 
   function toggleEditor(index: number) {
-    if(toggleEdit === null) {
-      setToggleEdit(index)
+    if (toggleEdit === null) {
+      setToggleEdit(index);
     } else {
-      setToggleEdit(null)
+      setToggleEdit(null);
     }
   }
 
@@ -108,55 +114,64 @@ export default function EditTreino() {
     addFieldsByTreinos(editableTreino);
   }, [editableTreino]);
   return (
-    <main className="mx-6 mt-8 flex flex-col items-center">
+    <main className='mx-6 mt-8 flex flex-col items-center'>
       <Select
         selectData={diasData}
-        defaultOptionValue="D. Semana"
+        defaultOptionValue='D. Semana'
         onChange={(e) => setDiasSelect(e.target.value)}
         value={selectRecoilValue}
       />
       <form
-        className="my-8 flex flex-col items-center"
+        className='my-8 flex flex-col items-center'
         onSubmit={handleTreinoUpdate}
       >
         {selectRecoilValue.length > 0 &&
           inputFields.map((input, index) => (
-            <div className={classNames("grid grid-cols-6 gap-4 mb-8 items-center p-1", {
-              "bg-black/30 rounded-full": toggleEdit == index
-            })} key={index}>
+            <div
+              className={classNames(
+                'grid grid-cols-6 gap-4 mb-8 items-center p-1',
+                {
+                  'bg-black/30 rounded-full': toggleEdit == index,
+                }
+              )}
+              key={index}
+            >
               <input
-                className="col-span-2 bg-black text-white rounded-full px-4 py-2 text-center"
+                className='col-span-2 bg-black text-white rounded-full px-4 py-2 text-center'
                 placeholder={input.name}
-                name="name"
+                name='name'
                 value={input.name}
                 onChange={(event) => handleFormChange(index, event)}
               />
               <input
-                className="bg-black text-white rounded-full px-4 py-2 text-center col-span-2"
+                className='bg-black text-white rounded-full px-4 py-2 text-center col-span-2'
                 placeholder={input.reps}
-                name="reps"
+                name='reps'
                 value={input.reps}
                 onChange={(event) => handleFormChange(index, event)}
               />
               <input
-                className="bg-black text-white rounded-full px-4 py-2 text-center"
+                className='bg-black text-white rounded-full px-4 py-2 text-center'
                 placeholder={input.sets}
-                name="sets"
+                name='sets'
                 value={input.sets}
                 onChange={(event) => handleFormChange(index, event)}
               />
               <span
                 onClick={() => toggleEditor(index)}
-                className={classNames("text-white h-[30px] w-[30px] hover:bg-black/30 rounded-full p-1 mx-auto", {
-                  "bg-black/30 rounded-full": toggleEdit == index
-                })}
+                className={classNames(
+                  'text-white h-[30px] w-[30px] hover:bg-black/30 rounded-full p-1 mx-auto',
+                  {
+                    'bg-black/30 rounded-full': toggleEdit == index,
+                  }
+                )}
               >
-                <Image src={edit} alt="" />
+                <Image src={edit} alt='' />
               </span>
             </div>
           ))}
 
-        <Button type="submit">Salvar</Button>
+        <Button type='submit'>Salvar</Button>
       </form>
     </main>
   );
