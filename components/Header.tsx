@@ -1,35 +1,36 @@
-import React, { useState } from "react";
-import SideBar from "./SideBar";
+import React, { useState } from 'react';
+import SideBar from './SideBar';
+import Image from 'next/image';
+import Logo from '../assets/logo.svg';
 
 export default function Header() {
   const [openState, setOpenState] = useState<'open' | 'closed'>('closed');
 
   function openNav() {
-    if(openState === 'closed') {
-      setOpenState('open')
+    if (openState === 'closed') {
+      setOpenState('open');
     } else {
-      setOpenState('closed')
+      setOpenState('closed');
     }
   }
 
   return (
     <>
       <header
-        className="mx-6 mt-4
+        className='mx-6 md:mx-8 mt-4
       flex justify-between items-center
-      pb-4"
+      pb-4'
       >
-        <strong className="text-lg text-black font-black">
-          USheipado
-        </strong>
+        <div className='max-w-[90px]'>
+          <Image src={Logo} alt='' />
+        </div>
         <nav onClick={openNav}>
-          <div className="bg-black h-[3px] w-6 rounded-full mb-1"></div>
-          <div className="bg-black h-[3px] w-6 rounded-full mb-1"></div>
-          <div className="bg-black h-[3px] w-5 rounded-full"></div>
+          <div className='bg-orange-500 h-[3px] w-6 rounded-full mb-1'></div>
+          <div className='bg-orange-500 h-[3px] w-6 rounded-full mb-1'></div>
+          <div className='bg-orange-500 h-[3px] w-5 rounded-full'></div>
         </nav>
       </header>
       <SideBar status={openState} />
-      <div className="bg-black h-[3px] mx-6 rounded-full"></div>
     </>
   );
 }

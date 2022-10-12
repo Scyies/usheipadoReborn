@@ -1,17 +1,17 @@
-import type { AppProps } from "next/app";
-import "../styles/globals.css";
-import { RecoilRoot } from "recoil";
-import Header from "../components/Header";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.min.css";
+import type { AppProps } from 'next/app';
+import '../styles/globals.css';
+import { RecoilRoot } from 'recoil';
+import Header from '../components/Header';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.min.css';
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <RecoilRoot>
-      <Header />
+      {/* <Header /> */}
       <Component {...pageProps} />
-      <ToastContainer 
-        position="bottom-center"
+      <ToastContainer
+        position='bottom-center'
         autoClose={5000}
         hideProgressBar={false}
         newestOnTop={false}
@@ -20,7 +20,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         pauseOnFocusLoss
         pauseOnHover
         draggable
-        theme="colored"
+        theme='colored'
       />
     </RecoilRoot>
   );
