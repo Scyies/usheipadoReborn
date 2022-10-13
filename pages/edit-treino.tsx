@@ -2,28 +2,20 @@ import React, { useEffect, useState } from 'react';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { Dias } from '.';
 import { diasSelectState, userId } from '../atom/atom';
-import Button from '../components/Button';
-import EditRow from '../components/EditRow';
 import Select from '../components/Select';
 import { fetchDiasData } from '../utils/fetchDias';
 import { fetchTreinosByDia, Treino } from '../utils/fetchTreinosByDia';
 import { supabase } from '../supa';
-import edit from '../assets/edit.svg';
-import Image from 'next/image';
-import classNames from 'classnames';
 import { toast } from 'react-toastify';
 import Footer from '../components/Footer';
 import Header from '../components/Header';
-import { CaretDown, CaretLeft } from 'phosphor-react';
+import { EditCard } from '../components/EditCard';
+import { TreinoCard } from '../components/TreinoCard';
 
-interface TreinoInput {
+export interface TreinoInput {
   name: string | undefined;
   reps: string | undefined;
   sets: string | undefined;
-}
-
-interface TreinoState {
-  TreinoInput: TreinoInput;
 }
 
 export default function EditTreino() {
@@ -32,11 +24,15 @@ export default function EditTreino() {
   const selectRecoilValue = useRecoilValue(diasSelectState);
   const [editableTreino, setEditableTreino] = useState<Treino[]>([]);
 
+  const setLoggedUser = useSetRecoilState(userId);
+
   const userIdValue = useRecoilValue(userId);
 
   const [inputFields, setInputFields] = useState<TreinoInput[]>([]);
 
   const [toggleEdit, setToggleEdit] = useState<number | null>(null);
+
+  const [changeType, setChangeType] = useState<'edit' | 'delete' | ''>('');
 
   function handleFormChange(
     index: number,
@@ -61,7 +57,10 @@ export default function EditTreino() {
     setInputFields(newField);
   }
 
-  async function handleTreinoUpdate(event: React.FormEvent<HTMLFormElement>) {
+  async function handleTreinoUpdate(
+    event: React.FormEvent<HTMLFormElement>,
+    type: string
+  ) {
     event.preventDefault();
 
     if (toggleEdit == null) {
@@ -69,7 +68,7 @@ export default function EditTreino() {
       return;
     }
 
-    try {
+    if (type === 'edit') {
       const { data, error } = await supabase
         .from('Treinos')
         .update({
@@ -89,8 +88,17 @@ export default function EditTreino() {
         console.log(error);
         toast.error(error.message);
       }
-    } catch (error) {
-      console.log(error);
+    }
+
+    if (type === 'delete') {
+      const { error } = await supabase
+        .from('Treinos')
+        .delete()
+        .eq('id', editableTreino[toggleEdit!].id);
+      toast.success('Treino excluído com sucesso!');
+      if (error) {
+        toast.error(error.message);
+      }
     }
   }
 
@@ -104,6 +112,8 @@ export default function EditTreino() {
 
   useEffect(() => {
     fetchDiasData(setDiasData);
+    const userStorage = localStorage.getItem('token');
+    userStorage && setLoggedUser(userStorage!);
   }, []);
   useEffect(() => {
     fetchTreinosByDia(setEditableTreino, selectRecoilValue, userIdValue);
@@ -115,6 +125,9 @@ export default function EditTreino() {
     <>
       <Header />
       <main className='mx-6 mt-8 flex flex-col items-center'>
+        <h1 className='text-white-200 text-xs mb-4'>
+          Selecione o dia da semana!
+        </h1>
         <Select
           selectData={diasData}
           defaultOptionValue='D. Semana'
@@ -124,56 +137,27 @@ export default function EditTreino() {
         />
         <form
           className='my-8 flex flex-col items-center'
-          onSubmit={handleTreinoUpdate}
+          onSubmit={(event) => handleTreinoUpdate(event, changeType)}
         >
           {selectRecoilValue.length > 0 &&
             inputFields.map((input, index) => (
-              <div
-                className={classNames(
-                  'grid grid-cols-6 gap-4 mb-8 items-center p-1',
-                  {
-                    'bg-black/30 rounded-full': toggleEdit == index,
-                  }
+              <div key={index} className='my-8 max-w-xs w-full'>
+                <TreinoCard
+                  editState={toggleEdit}
+                  edittor={toggleEditor}
+                  index={index}
+                  treino={input?.name!}
+                />
+                {toggleEdit == index && (
+                  <EditCard
+                    index={index}
+                    input={input}
+                    setValue={handleFormChange}
+                    mutationType={setChangeType}
+                  />
                 )}
-                key={index}
-              >
-                <input
-                  className='col-span-2 bg-black text-white rounded-full px-4 py-2 text-center'
-                  placeholder={input.name}
-                  name='name'
-                  value={input.name}
-                  onChange={(event) => handleFormChange(index, event)}
-                />
-                <input
-                  className='bg-black text-white rounded-full px-4 py-2 text-center col-span-2'
-                  placeholder={input.reps}
-                  name='reps'
-                  value={input.reps}
-                  onChange={(event) => handleFormChange(index, event)}
-                />
-                <input
-                  className='bg-black text-white rounded-full px-4 py-2 text-center'
-                  placeholder={input.sets}
-                  name='sets'
-                  value={input.sets}
-                  onChange={(event) => handleFormChange(index, event)}
-                />
-                <span
-                  onClick={() => toggleEditor(index)}
-                  className={classNames(
-                    'text-white h-[30px] w-[30px] hover:bg-black/30 rounded-full p-1 mx-auto'
-                  )}
-                >
-                  {toggleEdit == index ? (
-                    <CaretDown size={22} />
-                  ) : (
-                    <CaretLeft size={22} />
-                  )}
-                </span>
               </div>
             ))}
-
-          <Button type='submit'>Salvar</Button>
         </form>
       </main>
       <Footer />

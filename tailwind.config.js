@@ -27,16 +27,31 @@ module.exports = {
         300: '#f06b50',
       },
       blue: {
-        500: '#0091ff',
+        500: '#0091FF',
       },
       black: '#252A34',
       white: {
         200: '#ededed',
       },
       pink: '#FF2E63',
-      blue: '#08D9D6',
     },
-    extend: {},
+    extend: {
+      animation: {
+        slideIn: 'slideIn .3s linear',
+      },
+      keyframes: {
+        slideIn: {
+          '0%': {
+            opacity: '0',
+            transform: 'translateY(-20%)',
+          },
+          '100%': {
+            opacity: '100',
+            transform: 'translateY(0%)',
+          },
+        },
+      },
+    },
   },
   plugins: [],
 };

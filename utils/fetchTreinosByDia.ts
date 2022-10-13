@@ -4,7 +4,7 @@ import { supabase } from '../supa';
 import { sortTreinoByCreation } from './sortTreinosByCreation';
 
 export interface Treino {
-  id: string;
+  id?: string;
   name: string;
   reps?: string;
   sets?: number;
