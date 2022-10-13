@@ -2,15 +2,14 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 import { useRecoilValue } from 'recoil';
-import { userId } from '../../atom/atom';
-import Button from '../../components/Button';
-import Header from '../../components/Header';
-import Table from '../../components/Table';
+import { userId } from '../atom/atom';
+import Button from '../components/Button';
+import Header from '../components/Header';
+import Table from '../components/Table';
 
 export default function Home() {
   const userIdValue: string = useRecoilValue(userId);
   const router = useRouter();
-
   return (
     <>
       <Header />
@@ -21,7 +20,10 @@ export default function Home() {
         <section className='flex flex-col justify-center'>
           <Table />
         </section>
-        <Link href='/novo-treino' passHref>
+        <p className='text-gray-300 text-xs mb-4'>
+          Ainda não cadastrou seu treino?
+        </p>
+        <Link href='/novo-treino'>
           <a className='mb-8'>
             <Button>Novo treino</Button>
           </a>

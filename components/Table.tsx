@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { ChangeEvent, useEffect, useState } from 'react';
 import { diasSelectState } from '../atom/atom';
 import { Dias } from '../pages';
 import Select from './Select';
@@ -27,6 +27,8 @@ export default function Table() {
   const [diasData, setDiasData] = useState<Dias[]>([]);
   const userIdValue = useRecoilValue(userId);
 
+  console.log(selectRecoilValue);
+
   useEffect(() => {
     fetchDiasData(setDiasData);
   }, []);
@@ -37,29 +39,34 @@ export default function Table() {
   }, [selectRecoilValue, userIdValue]);
   return (
     <>
-      <div className='self-center mb-8'>
+      <div className='self-center'>
         <Select
           selectData={diasData}
           defaultOptionValue='D. Semana'
-          onChange={(e) => setDiasSelect(e.target.value)}
           value={selectRecoilValue}
+          onValueChange={setDiasSelect}
+          selectedValue={selectRecoilValue}
         />
       </div>
-      <table className='rounded-2xl bg-black text-white border-separate'>
+      <table className='rounded bg-gray-500 text-white-200 border-separate border-gray-300 my-8'>
         <thead className='text-center'>
-          <tr className='font-bold '>
-            <td className='border-r-2'>Treino</td>
-            <td className='border-r-2'>Sets</td>
-            <td className=''>Reps</td>
+          <tr className='font-semibold '>
+            <td className='border-r border-gray-300 px-4 py-3'>Treino</td>
+            <td className='border-r border-gray-300 px-4 py-3'>Séries</td>
+            <td className='px-4 py-3'>Repetições</td>
           </tr>
         </thead>
-        <tbody className='text-center'>
+        <tbody className='text-center text-xs'>
           {tableTreinos &&
             tableTreinos.map((treino: Treino) => (
               <tr key={treino.id}>
-                <td className='border-r-2 border-t-2'>{treino.name}</td>
-                <td className='border-r-2 border-t-2'>{treino.sets}</td>
-                <td className='border-t-2'>{treino.reps}</td>
+                <td className='border-r border-gray-300 border-t py-3'>
+                  {treino.name}
+                </td>
+                <td className='border-r border-gray-300 border-t'>
+                  {treino.sets}
+                </td>
+                <td className='border-t border-gray-300'>{treino.reps}</td>
               </tr>
             ))}
         </tbody>

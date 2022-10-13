@@ -31,8 +31,6 @@ const Home: NextPage = () => {
     const input = Object.fromEntries(formData);
 
     if (formType === 'sigin') {
-      console.log(input);
-
       if (!input) return;
 
       if (input.senha !== input.confirmarSenha) {
@@ -61,7 +59,7 @@ const Home: NextPage = () => {
         setLoggedUser(data['session']?.user.id!);
 
         toast.success('Usuário criado com sucesso!');
-        router.push('/home');
+        return router.push('/home');
       }
     }
 
@@ -81,7 +79,7 @@ const Home: NextPage = () => {
         const session = localStorage.setItem('token', JSON.stringify(data));
         setLoggedUser(data['session']?.user.id!);
         toast.success('Login realizado com sucesso!');
-        router.push('/home');
+        return router.push('/home');
       }
     }
   }

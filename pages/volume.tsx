@@ -2,14 +2,16 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
-import { Dias } from '..';
-import { diasSelectState } from '../../atom/atom';
-import Button from '../../components/Button';
-import Input from '../../components/Input';
-import Select from '../../components/Select';
-import { fetchDiasData } from '../../utils/fetchDias';
-import { fetchTreinosNameByDia, Treino } from '../../utils/fetchTreinosByDia';
-import { supabase } from '../../supa';
+import { Dias } from '.';
+import { diasSelectState } from '../atom/atom';
+import Button from '../components/Button';
+import { Input } from '../components/Input';
+import Select from '../components/Select';
+import { fetchDiasData } from '../utils/fetchDias';
+import { fetchTreinosNameByDia, Treino } from '../utils/fetchTreinosByDia';
+import { supabase } from '../supa';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
 
 export default function Volume() {
   const setDiasSelect = useSetRecoilState(diasSelectState);
@@ -59,17 +61,18 @@ export default function Volume() {
   }, [selectRecoilValue]);
   return (
     <>
+      <Header />
       <main className='mx-6 mt-8 flex justify-center flex-col'>
-        <h1 className='text-center text-black text-sm mb-8'>
-          Insira a média do peso utilizado, o número médio de repetições e as
-          séries.
+        <h1 className='text-center text-white-200 text-xs mb-4'>
+          Selecione o dia da semana!
         </h1>
         <div className='self-center'>
           <Select
             selectData={diasData}
             defaultOptionValue='D. Semana'
-            onChange={(e) => setDiasSelect(e.target.value)}
             value={selectRecoilValue}
+            onValueChange={setDiasSelect}
+            selectedValue={selectRecoilValue}
           />
         </div>
         <form
@@ -77,13 +80,6 @@ export default function Volume() {
           className='flex flex-col mt-8 place-items-center mb-8'
         >
           <div className='flex flex-col items-center gap-8 w-full justify-between mb-6'>
-            <Select
-              selectData={treinoSelectState}
-              defaultOptionValue='Exercício'
-              onChange={(e) => setTreinoSelect(e.target.value)}
-              value={treinoSelect}
-              name='treinoId'
-            />
             <div className='grid grid-cols-3 gap-4 w-full text-center mb-4'>
               <div className='w-full'>
                 <Input
@@ -117,6 +113,7 @@ export default function Volume() {
           <Button type='submit'>Adicionar</Button>
         </form>
       </main>
+      <Footer />
     </>
   );
 }

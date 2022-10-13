@@ -1,17 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
-import { Dias } from '..';
-import { diasSelectState, userId } from '../../atom/atom';
-import Button from '../../components/Button';
-import EditRow from '../../components/EditRow';
-import Select from '../../components/Select';
-import { fetchDiasData } from '../../utils/fetchDias';
-import { fetchTreinosByDia, Treino } from '../../utils/fetchTreinosByDia';
-import { supabase } from '../../supa';
-import edit from '../../assets/edit.svg';
+import { Dias } from '.';
+import { diasSelectState, userId } from '../atom/atom';
+import Button from '../components/Button';
+import EditRow from '../components/EditRow';
+import Select from '../components/Select';
+import { fetchDiasData } from '../utils/fetchDias';
+import { fetchTreinosByDia, Treino } from '../utils/fetchTreinosByDia';
+import { supabase } from '../supa';
+import edit from '../assets/edit.svg';
 import Image from 'next/image';
 import classNames from 'classnames';
 import { toast } from 'react-toastify';
+import Footer from '../components/Footer';
+import Header from '../components/Header';
+import { CaretDown, CaretLeft } from 'phosphor-react';
 
 interface TreinoInput {
   name: string | undefined;
@@ -43,11 +46,6 @@ export default function EditTreino() {
     data[index][event.target.name as keyof TreinoInput] = event.target.value;
     setInputFields(data);
   }
-
-  // function handleFormChange(event) {
-  //   const value = event.target.value;
-  //   setInputFields([...editableTreino, event.target.name: value])
-  // }
 
   function addFieldsByTreinos(editableTreino: Treino[]) {
     let newField: TreinoInput[] = [];
@@ -114,65 +112,71 @@ export default function EditTreino() {
     addFieldsByTreinos(editableTreino);
   }, [editableTreino]);
   return (
-    <main className='mx-6 mt-8 flex flex-col items-center'>
-      <Select
-        selectData={diasData}
-        defaultOptionValue='D. Semana'
-        onChange={(e) => setDiasSelect(e.target.value)}
-        value={selectRecoilValue}
-      />
-      <form
-        className='my-8 flex flex-col items-center'
-        onSubmit={handleTreinoUpdate}
-      >
-        {selectRecoilValue.length > 0 &&
-          inputFields.map((input, index) => (
-            <div
-              className={classNames(
-                'grid grid-cols-6 gap-4 mb-8 items-center p-1',
-                {
-                  'bg-black/30 rounded-full': toggleEdit == index,
-                }
-              )}
-              key={index}
-            >
-              <input
-                className='col-span-2 bg-black text-white rounded-full px-4 py-2 text-center'
-                placeholder={input.name}
-                name='name'
-                value={input.name}
-                onChange={(event) => handleFormChange(index, event)}
-              />
-              <input
-                className='bg-black text-white rounded-full px-4 py-2 text-center col-span-2'
-                placeholder={input.reps}
-                name='reps'
-                value={input.reps}
-                onChange={(event) => handleFormChange(index, event)}
-              />
-              <input
-                className='bg-black text-white rounded-full px-4 py-2 text-center'
-                placeholder={input.sets}
-                name='sets'
-                value={input.sets}
-                onChange={(event) => handleFormChange(index, event)}
-              />
-              <span
-                onClick={() => toggleEditor(index)}
+    <>
+      <Header />
+      <main className='mx-6 mt-8 flex flex-col items-center'>
+        <Select
+          selectData={diasData}
+          defaultOptionValue='D. Semana'
+          value={selectRecoilValue}
+          onValueChange={setDiasSelect}
+          selectedValue={selectRecoilValue}
+        />
+        <form
+          className='my-8 flex flex-col items-center'
+          onSubmit={handleTreinoUpdate}
+        >
+          {selectRecoilValue.length > 0 &&
+            inputFields.map((input, index) => (
+              <div
                 className={classNames(
-                  'text-white h-[30px] w-[30px] hover:bg-black/30 rounded-full p-1 mx-auto',
+                  'grid grid-cols-6 gap-4 mb-8 items-center p-1',
                   {
                     'bg-black/30 rounded-full': toggleEdit == index,
                   }
                 )}
+                key={index}
               >
-                <Image src={edit} alt='' />
-              </span>
-            </div>
-          ))}
+                <input
+                  className='col-span-2 bg-black text-white rounded-full px-4 py-2 text-center'
+                  placeholder={input.name}
+                  name='name'
+                  value={input.name}
+                  onChange={(event) => handleFormChange(index, event)}
+                />
+                <input
+                  className='bg-black text-white rounded-full px-4 py-2 text-center col-span-2'
+                  placeholder={input.reps}
+                  name='reps'
+                  value={input.reps}
+                  onChange={(event) => handleFormChange(index, event)}
+                />
+                <input
+                  className='bg-black text-white rounded-full px-4 py-2 text-center'
+                  placeholder={input.sets}
+                  name='sets'
+                  value={input.sets}
+                  onChange={(event) => handleFormChange(index, event)}
+                />
+                <span
+                  onClick={() => toggleEditor(index)}
+                  className={classNames(
+                    'text-white h-[30px] w-[30px] hover:bg-black/30 rounded-full p-1 mx-auto'
+                  )}
+                >
+                  {toggleEdit == index ? (
+                    <CaretDown size={22} />
+                  ) : (
+                    <CaretLeft size={22} />
+                  )}
+                </span>
+              </div>
+            ))}
 
-        <Button type='submit'>Salvar</Button>
-      </form>
-    </main>
+          <Button type='submit'>Salvar</Button>
+        </form>
+      </main>
+      <Footer />
+    </>
   );
 }
