@@ -35,38 +35,36 @@ export default function NovoTreino() {
       user_id: userIdValue,
     };
 
-    // if (
-    //   !treinoInput.name ||
-    //   !treinoInput.reps ||
-    //   !treinoInput.sets ||
-    //   !treinoInput.diasId ||
-    //   !treinoInput.user_id
-    // ) {
-    //   toast.error('Favor preencher todos os campos!');
-    //   return;
-    // }
+    if (
+      !treinoInput.name ||
+      !treinoInput.reps ||
+      !treinoInput.sets ||
+      !treinoInput.diasId ||
+      !treinoInput.user_id
+    ) {
+      toast.error('Favor preencher todos os campos!');
+      return;
+    }
 
-    console.log(treinoInput);
+    const { data, error } = await supabase
+      .from('Treinos')
+      .insert([
+        {
+          name: treinoInput.name,
+          reps: treinoInput.reps,
+          sets: treinoInput.sets,
+          diasId: treinoInput.diasId,
+          user_id: treinoInput.user_id,
+        },
+      ])
+      .select('*');
 
-    // const { data, error } = await supabase
-    //   .from('Treinos')
-    //   .insert([
-    //     {
-    //       name: treinoInput.name,
-    //       reps: treinoInput.reps,
-    //       sets: treinoInput.sets,
-    //       diasId: treinoInput.diasId,
-    //       user_id: treinoInput.user_id,
-    //     },
-    //   ])
-    //   .select('*');
-
-    // if (error) {
-    //   toast.error(error.message);
-    // }
-    // if (data) {
-    //   toast.success('Treino adicionado com sucesso!');
-    // }
+    if (error) {
+      toast.error(error.message);
+    }
+    if (data) {
+      toast.success('Treino adicionado com sucesso!');
+    }
   }
 
   useEffect(() => {
@@ -75,7 +73,7 @@ export default function NovoTreino() {
   return (
     <>
       <Header />
-      <section className='mx-6'>
+      <section className='mx-auto max-w-xs md:max-w-md lg:max-w-lg'>
         <form
           onSubmit={handleNovoTreino}
           className='max-w-xs mx-auto mt-8 flex justify-center flex-col w-full'

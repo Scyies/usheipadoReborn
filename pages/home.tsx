@@ -1,20 +1,15 @@
 import Link from 'next/link';
-import { useRouter } from 'next/router';
-import React, { useEffect } from 'react';
-import { useRecoilValue } from 'recoil';
-import { userId } from '../atom/atom';
+import React from 'react';
 import Button from '../components/Button';
 import Footer from '../components/Footer';
 import Header from '../components/Header';
 import Table from '../components/Table';
 
 export default function Home() {
-  const userIdValue: string = useRecoilValue(userId);
-  const router = useRouter();
   return (
     <>
       <Header />
-      <main className='mx-auto max-w-xs mt-8 flex flex-col items-center'>
+      <main className='mx-auto max-w-xs md:max-w-md lg:max-w-lg mt-8 flex flex-col items-center'>
         <p className='text-xs text-white-200 text-center mb-4'>
           Selecione o dia da semana!
         </p>

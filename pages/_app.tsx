@@ -8,7 +8,6 @@ import 'react-toastify/dist/ReactToastify.min.css';
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <RecoilRoot>
-      {/* <Header /> */}
       <Component {...pageProps} />
       <ToastContainer
         position='bottom-center'

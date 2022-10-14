@@ -1,10 +1,10 @@
-import React, { SelectHTMLAttributes, useState } from 'react';
+import React from 'react';
 import { Dias } from '../pages';
 import { Treino } from '../utils/fetchTreinosByDia';
 import * as RadixSelect from '@radix-ui/react-select';
 
 interface Props extends RadixSelect.SelectProps {
-  selectData: Dias[] | undefined | Treino[];
+  selectData: Dias[] | Treino[];
   defaultOptionValue: string;
   selectedValue: string;
 }
@@ -27,6 +27,12 @@ export default function Select({
       <RadixSelect.Content className='text-white-200 flex justify-center text-center bg-gray-700 rounded outline-none w-full max-w-[140px] z-50'>
         <RadixSelect.ScrollUpButton />
         <RadixSelect.Viewport>
+          <RadixSelect.Item
+            value={defaultOptionValue}
+            className='outline-none hover:bg-gray-300 px-4 py-3 text-center'
+          >
+            <RadixSelect.ItemText>{defaultOptionValue}</RadixSelect.ItemText>
+          </RadixSelect.Item>
           {selectData &&
             selectData.map((dia: Dias | Treino) => (
               <RadixSelect.Item

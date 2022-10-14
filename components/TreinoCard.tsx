@@ -1,6 +1,5 @@
 import classNames from 'classnames';
 import { CaretDown, CaretLeft } from 'phosphor-react';
-import { Dispatch } from 'react';
 
 interface TreinoCardProps {
   editState: number | null;
@@ -23,7 +22,9 @@ export function TreinoCard({
       </div>
       <span
         onClick={() => edittor(index)}
-        className={classNames('text-white-200 h-[30px] w-[30px] p-1 mx-auto')}
+        className={classNames(
+          'text-white-200 h-[30px] w-[30px] p-1 mx-auto cursor-pointer'
+        )}
       >
         {editState == index ? <CaretDown size={22} /> : <CaretLeft size={22} />}
       </span>

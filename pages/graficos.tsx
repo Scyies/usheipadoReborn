@@ -41,7 +41,7 @@ export default function Charts() {
   return (
     <>
       <Header />
-      <main className='mx-auto max-w-xs min-h-screen'>
+      <main className='mx-auto max-w-xs md:max-w-md lg:max-w-lg min-h-screen'>
         <h1 className='text-white-200 text-xs text-center mt-4'>
           Selecione o dia e o treino que quer ver o volume utilizado!
         </h1>

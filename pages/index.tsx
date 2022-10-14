@@ -31,7 +31,7 @@ const Home: NextPage = () => {
     const input = Object.fromEntries(formData);
 
     if (formType === 'sigin') {
-      if (!input) return;
+      if (!input) return toast.error('Favor preencher todos os campos!');
 
       if (input.senha !== input.confirmarSenha) {
         return toast.error('As duas senhas não são iguais!');
@@ -103,7 +103,7 @@ const Home: NextPage = () => {
           <Image src={Logo} alt='' className='w-[135px] h-[60px]' />
           <h1 className='text-white-200 text-lg'>USheipado</h1>
         </header>
-        <main className='mx-auto max-w-xs my-6 flex flex-col justify-center'>
+        <main className='mx-auto max-w-xs md:max-w-md lg:max-w-lg my-6 flex flex-col justify-center'>
           <p className='text-gray-300 text-xs text-center'>
             {formType === 'login'
               ? 'Faça o login e comece a controlar seu treino!'
@@ -198,14 +198,14 @@ const Home: NextPage = () => {
           )}
           {formType === 'login' ? (
             <p
-              className='text-gray-300 text-center underline text-xs'
+              className='text-gray-300 text-center underline text-xs cursor-pointer hover:text-white-200'
               onClick={() => setFormType('sigin')}
             >
               Ainda não tem uma conta? Cadastre-se agora!
             </p>
           ) : (
             <p
-              className='text-gray-300 text-center underline text-xs'
+              className='text-gray-300 text-center underline text-xs cursor-pointer hover:text-white-200'
               onClick={() => setFormType('login')}
             >
               Já tem uma conta? Faça seu login!

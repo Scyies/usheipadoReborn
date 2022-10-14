@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import SideBar from './SideBar';
 import Image from 'next/image';
 import Logo from '../assets/logo.svg';
+import classNames from 'classnames';
 
 export default function Header() {
   const [openState, setOpenState] = useState<'open' | 'closed'>('closed');
@@ -24,10 +25,31 @@ export default function Header() {
         <div className='max-w-[90px]'>
           <Image src={Logo} alt='' />
         </div>
-        <nav onClick={openNav}>
-          <div className='bg-orange-500 h-[3px] w-6 rounded-full mb-1'></div>
-          <div className='bg-orange-500 h-[3px] w-6 rounded-full mb-1'></div>
-          <div className='bg-orange-500 h-[3px] w-5 rounded-full'></div>
+        <nav onClick={openNav} className='cursor-pointer'>
+          <div
+            className={classNames(
+              'bg-orange-500 h-[3px] w-6 rounded-full mb-1  transition-all',
+              {
+                'rotate-45 translate-y-[6px]': openState === 'open',
+              }
+            )}
+          ></div>
+          <div
+            className={classNames(
+              'bg-orange-500 h-[3px] w-6 rounded-full mb-1  transition-all',
+              {
+                '-rotate-45 -translate-y-[1px]': openState === 'open',
+              }
+            )}
+          ></div>
+          <div
+            className={classNames(
+              'bg-orange-500 h-[3px] w-5 rounded-full  transition-all',
+              {
+                'translate-x-full opacity-0': openState === 'open',
+              }
+            )}
+          ></div>
         </nav>
       </header>
       <SideBar status={openState} />

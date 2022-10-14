@@ -1,24 +1,15 @@
-import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { Dias } from '.';
 import { diasSelectState, userId } from '../atom/atom';
-import Button from '../components/Button';
-import { Input } from '../components/Input';
 import Select from '../components/Select';
 import { fetchDiasData } from '../utils/fetchDias';
-import {
-  fetchTreinosByDia,
-  fetchTreinosNameByDia,
-  Treino,
-} from '../utils/fetchTreinosByDia';
+import { fetchTreinosByDia, Treino } from '../utils/fetchTreinosByDia';
 import { supabase } from '../supa';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import { TreinoInput } from './edit-treino';
 import { TreinoCard } from '../components/TreinoCard';
-import { SelectValue } from '@radix-ui/react-select';
 import { NewVolumeCard } from '../components/NewVolumeCard';
 
 export interface VolumeInput {
@@ -79,13 +70,10 @@ export default function Volume() {
     }
   }
 
-  console.log(inputFields);
-
   async function handleNovoVolume(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     const formData = new FormData(event.target as HTMLFormElement);
-    const input = Object.fromEntries(formData);
 
     const totalVolume =
       Number(inputFields[toggleEdit!].peso) *
@@ -126,7 +114,7 @@ export default function Volume() {
   return (
     <>
       <Header />
-      <main className='mx-auto mt-8 flex min-h-[calc(100vh-62px)] max-w-xs flex-col'>
+      <main className='mx-auto mt-8 flex min-h-[calc(100vh-62px)] max-w-xs md:max-w-md lg:max-w-lg flex-col'>
         <h1 className='text-center text-white-200 text-xs mb-4'>
           Selecione o dia da semana!
         </h1>
@@ -139,6 +127,9 @@ export default function Volume() {
             selectedValue={selectRecoilValue}
           />
         </div>
+        <h2 className='text-center text-white-200 text-xs mt-4'>
+          Selecione o treino em que quer salvar o volume de carga
+        </h2>
         <form
           onSubmit={handleNovoVolume}
           className='my-8 flex flex-col gap-4 items-center'
@@ -162,7 +153,6 @@ export default function Volume() {
               </div>
             ))}
           <div className='mb-8'></div>
-          <Button type='submit'>Adicionar</Button>
         </form>
       </main>
       <Footer />
