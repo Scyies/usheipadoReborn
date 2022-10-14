@@ -43,13 +43,16 @@ module.exports = {
         slideIn: {
           '0%': {
             opacity: '0',
-            transform: 'translateY(-20%)',
+            transform: 'translateY(-100%)',
           },
           '100%': {
             opacity: '100',
             transform: 'translateY(0%)',
           },
         },
+      },
+      gridTemplateColumns: {
+        volCard: 'repeat(2, minmax(0, 2fr));',
       },
     },
   },

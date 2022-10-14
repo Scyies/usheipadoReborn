@@ -3,22 +3,83 @@ import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { Dias } from '.';
-import { diasSelectState } from '../atom/atom';
+import { diasSelectState, userId } from '../atom/atom';
 import Button from '../components/Button';
 import { Input } from '../components/Input';
 import Select from '../components/Select';
 import { fetchDiasData } from '../utils/fetchDias';
-import { fetchTreinosNameByDia, Treino } from '../utils/fetchTreinosByDia';
+import {
+  fetchTreinosByDia,
+  fetchTreinosNameByDia,
+  Treino,
+} from '../utils/fetchTreinosByDia';
 import { supabase } from '../supa';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import { TreinoInput } from './edit-treino';
+import { TreinoCard } from '../components/TreinoCard';
+import { SelectValue } from '@radix-ui/react-select';
+import { NewVolumeCard } from '../components/NewVolumeCard';
+
+export interface VolumeInput {
+  nome: string;
+  peso: string;
+  reps: string;
+  sets: string;
+  dia: Date | null | string;
+  id: string;
+}
 
 export default function Volume() {
   const setDiasSelect = useSetRecoilState(diasSelectState);
   const selectRecoilValue = useRecoilValue(diasSelectState);
+
   const [diasData, setDiasData] = useState<Dias[]>([]);
-  const [treinoSelectState, setTreinoSelectState] = useState<Treino[]>([]);
-  const [treinoSelect, setTreinoSelect] = useState<string>('');
+
+  const setLoggedUser = useSetRecoilState(userId);
+
+  const userIdValue = useRecoilValue(userId);
+
+  const [treinosList, setTreinosList] = useState<Treino[]>([]);
+
+  const [inputFields, setInputFields] = useState<VolumeInput[]>([]);
+
+  const [toggleEdit, setToggleEdit] = useState<number | null>(null);
+
+  function handleFormChange(
+    index: number,
+    event: React.ChangeEvent<HTMLInputElement>
+  ) {
+    let data: VolumeInput[] = [...inputFields];
+    data[index][event.target.name as keyof VolumeInput] = event.target.value;
+    setInputFields(data);
+  }
+
+  function addFieldsByTreinos(treinosList: Treino[]) {
+    let newField: VolumeInput[] = [];
+    treinosList.map((treino) => {
+      let field = {
+        nome: treino.name,
+        peso: '',
+        reps: '',
+        sets: '',
+        dia: null,
+        id: treino.id!,
+      };
+      newField.push(field);
+    });
+    setInputFields(newField);
+  }
+
+  function toggleEditor(index: number) {
+    if (toggleEdit === null) {
+      setToggleEdit(index);
+    } else {
+      setToggleEdit(null);
+    }
+  }
+
+  console.log(inputFields);
 
   async function handleNovoVolume(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -27,21 +88,17 @@ export default function Volume() {
     const input = Object.fromEntries(formData);
 
     const totalVolume =
-      Number(input.vol) * Number(input.reps) * Number(input.sets);
-
-    const volumeInput = {
-      vol: Math.round(totalVolume),
-      dia: input.dia,
-      treinoId: input.treinoId,
-    };
+      Number(inputFields[toggleEdit!].peso) *
+      Number(inputFields[toggleEdit!].reps) *
+      Number(inputFields[toggleEdit!].sets);
 
     const { data, error } = await supabase
       .from('Volumes')
       .insert([
         {
-          vol: volumeInput.vol,
-          dia: volumeInput.dia,
-          treinoId: volumeInput.treinoId,
+          vol: Math.round(totalVolume),
+          dia: inputFields[toggleEdit!].dia,
+          treinoId: inputFields[toggleEdit!].id,
         },
       ])
       .select('*');
@@ -57,12 +114,19 @@ export default function Volume() {
 
   useEffect(() => {
     fetchDiasData(setDiasData);
-    fetchTreinosNameByDia(setTreinoSelectState, selectRecoilValue);
+    const userStorage = localStorage.getItem('token');
+    userStorage && setLoggedUser(userStorage!);
   }, [selectRecoilValue]);
+  useEffect(() => {
+    fetchTreinosByDia(setTreinosList, selectRecoilValue, userIdValue);
+  }, [selectRecoilValue, userIdValue]);
+  useEffect(() => {
+    addFieldsByTreinos(treinosList);
+  }, [treinosList]);
   return (
     <>
       <Header />
-      <main className='mx-6 mt-8 flex justify-center flex-col'>
+      <main className='mx-auto mt-8 flex min-h-[calc(100vh-62px)] max-w-xs flex-col'>
         <h1 className='text-center text-white-200 text-xs mb-4'>
           Selecione o dia da semana!
         </h1>
@@ -77,39 +141,27 @@ export default function Volume() {
         </div>
         <form
           onSubmit={handleNovoVolume}
-          className='flex flex-col mt-8 place-items-center mb-8'
+          className='my-8 flex flex-col gap-4 items-center'
         >
-          <div className='flex flex-col items-center gap-8 w-full justify-between mb-6'>
-            <div className='grid grid-cols-3 gap-4 w-full text-center mb-4'>
-              <div className='w-full'>
-                <Input
-                  placeholder='Peso'
-                  className='bg-black text-white rounded-full px-4 py-2 text-center w-full'
-                  name='vol'
-                  autoComplete='off'
+          {selectRecoilValue.length > 0 &&
+            inputFields.map((input, index) => (
+              <div key={index} className='max-w-[300px] w-full overflow-hidden'>
+                <TreinoCard
+                  editState={toggleEdit}
+                  edittor={toggleEditor}
+                  index={index}
+                  treino={input?.nome!}
                 />
+                {toggleEdit == index && (
+                  <NewVolumeCard
+                    index={index}
+                    input={input}
+                    setValue={handleFormChange}
+                  />
+                )}
               </div>
-              <div>
-                <Input
-                  placeholder='Reps'
-                  className='bg-black text-white rounded-full px-4 py-2 text-center w-full'
-                  name='reps'
-                  autoComplete='off'
-                />
-              </div>
-              <div>
-                <Input
-                  placeholder='Sets'
-                  className='bg-black text-white rounded-full px-4 py-2 text-center w-full'
-                  name='sets'
-                  autoComplete='off'
-                />
-              </div>
-            </div>
-          </div>
-          <div className='mb-8'>
-            <Input type='date' name='dia' />
-          </div>
+            ))}
+          <div className='mb-8'></div>
           <Button type='submit'>Adicionar</Button>
         </form>
       </main>

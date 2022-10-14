@@ -31,7 +31,7 @@ TextInputIcon.displayName = 'TextInput.Icon';
 function TextInputInput({ ...rest }: TextInputInputProps) {
   return (
     <input
-      className='bg-transparent flex-1 text-white-200 text-xs outline-none placeholder:text-gray-300'
+      className='bg-transparent min-w-[10px] flex-1 text-white-200 text-xs outline-none placeholder:text-gray-300'
       {...rest}
     />
   );

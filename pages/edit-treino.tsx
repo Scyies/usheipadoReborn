@@ -124,7 +124,7 @@ export default function EditTreino() {
   return (
     <>
       <Header />
-      <main className='mx-6 mt-8 flex flex-col items-center'>
+      <main className='mx-auto max-w-xs mt-8 flex flex-col items-center min-h-screen'>
         <h1 className='text-white-200 text-xs mb-4'>
           Selecione o dia da semana!
         </h1>
@@ -136,12 +136,12 @@ export default function EditTreino() {
           selectedValue={selectRecoilValue}
         />
         <form
-          className='my-8 flex flex-col items-center'
+          className='my-8 flex flex-col gap-4 items-center'
           onSubmit={(event) => handleTreinoUpdate(event, changeType)}
         >
           {selectRecoilValue.length > 0 &&
             inputFields.map((input, index) => (
-              <div key={index} className='my-8 max-w-xs w-full'>
+              <div key={index} className='max-w-[300px] w-full overflow-hidden'>
                 <TreinoCard
                   editState={toggleEdit}
                   edittor={toggleEditor}
