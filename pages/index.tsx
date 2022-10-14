@@ -103,7 +103,7 @@ const Home: NextPage = () => {
           <Image src={Logo} alt='' className='w-[135px] h-[60px]' />
           <h1 className='text-white-200 text-lg'>USheipado</h1>
         </header>
-        <main className='mx-6 my-6 flex flex-col justify-center'>
+        <main className='mx-auto max-w-xs my-6 flex flex-col justify-center'>
           <p className='text-gray-300 text-xs text-center'>
             {formType === 'login'
               ? 'Faça o login e comece a controlar seu treino!'
