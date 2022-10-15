@@ -10,13 +10,13 @@ export default function Home() {
     <>
       <Header />
       <main className='min-h-[calc(100vh-170px)] h-full w-full mx-auto max-w-xs md:max-w-md lg:max-w-lg mt-8 flex flex-col items-center'>
-        <p className='text-xs text-white-200 text-center mb-4'>
+        <p className='text-xs text-white-200 text-center mb-4 select-none'>
           Selecione o dia da semana!
         </p>
         <section className='flex flex-col w-full justify-center'>
           <Table />
         </section>
-        <p className='text-gray-300 text-xs mb-4'>
+        <p className='text-gray-300 text-xs mb-4 select-none'>
           Ainda não cadastrou seu treino?
         </p>
         <Link href='/novo-treino'>

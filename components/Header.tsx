@@ -20,7 +20,7 @@ export default function Header() {
       <header
         className='mx-6 md:mx-8 mt-4
       flex justify-between items-center
-      pb-4'
+      pb-4 select-none'
       >
         <div className='max-w-[90px]'>
           <Image src={Logo} alt='' />

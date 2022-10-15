@@ -43,7 +43,7 @@ export default function Charts() {
     <>
       <Header />
       <main className='mx-auto max-w-xs md:max-w-md lg:max-w-lg min-h-[calc(100vh-170px)]'>
-        <h1 className='text-white-200 text-xs text-center mt-4'>
+        <h1 className='text-white-200 text-xs text-center mt-4 select-none'>
           Selecione o dia e o treino que quer ver o volume utilizado!
         </h1>
         <div className='flex justify-between my-8'>
@@ -90,7 +90,7 @@ export default function Charts() {
           <div className='flex items-center gap-4'>
             <label
               htmlFor=''
-              className='text-white-200 font-semibold text-center'
+              className='text-white-200 font-semibold text-center select-none'
             >
               Média
             </label>

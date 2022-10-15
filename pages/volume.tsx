@@ -109,7 +109,7 @@ export default function Volume() {
     <>
       <Header />
       <main className='mx-auto mt-8 flex min-h-[calc(100vh-170px)] max-w-xs md:max-w-md lg:max-w-lg flex-col'>
-        <h1 className='text-center text-white-200 text-xs mb-4'>
+        <h1 className='text-center text-white-200 text-xs mb-4 select-none'>
           Selecione o dia da semana!
         </h1>
         <div className='self-center'>
@@ -121,7 +121,7 @@ export default function Volume() {
             selectedValue={selectRecoilValue}
           />
         </div>
-        <h2 className='text-center text-white-200 text-xs mt-4'>
+        <h2 className='text-center text-white-200 text-xs mt-4 select-none'>
           Selecione o treino em que quer salvar o volume de carga
         </h2>
         <form

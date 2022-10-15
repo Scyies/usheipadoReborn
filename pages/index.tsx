@@ -120,12 +120,12 @@ const Home: NextPage = () => {
 
       <>
         <main className='flex flex-col min-h-screen justify-center'>
-          <header className='flex flex-col items-center justify-center gap-4 mt-10'>
+          <header className='flex flex-col items-center justify-center gap-4 mt-10 select-none'>
             <Image src={Logo} alt='' className='w-[135px] h-[60px]' />
             <span className='text-white-200 text-lg'>USheipado</span>
           </header>
           <section className='w-full mx-auto max-w-xs md:max-w-md lg:max-w-lg my-6 flex flex-col justify-center'>
-            <h1 className='text-gray-300 text-xs text-center'>
+            <h1 className='text-gray-300 text-xs text-center select-none'>
               {formType === 'login'
                 ? 'Faça o login e comece a controlar seu treino!'
                 : 'Crie sua conta agora mesmo!'}

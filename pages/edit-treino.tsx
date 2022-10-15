@@ -127,7 +127,7 @@ export default function EditTreino() {
     <>
       <Header />
       <main className=' mx-auto max-w-xs md:max-w-md lg:max-w-lg mt-8 flex flex-col items-center min-h-[calc(100vh-170px)]'>
-        <h1 className='text-white-200 text-xs mb-4'>
+        <h1 className='text-white-200 text-xs mb-4 select-none'>
           Selecione o dia da semana!
         </h1>
         <Select
