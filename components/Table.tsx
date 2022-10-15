@@ -27,8 +27,6 @@ export default function Table() {
   const [diasData, setDiasData] = useState<Dias[]>([]);
   const userIdValue = useRecoilValue(userId);
 
-  console.log(selectRecoilValue);
-
   useEffect(() => {
     fetchDiasData(setDiasData);
   }, []);

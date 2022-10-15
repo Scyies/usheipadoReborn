@@ -73,8 +73,6 @@ export default function Volume() {
   async function handleNovoVolume(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    const formData = new FormData(event.target as HTMLFormElement);
-
     const totalVolume =
       Number(inputFields[toggleEdit!].peso) *
       Number(inputFields[toggleEdit!].reps) *
@@ -114,7 +112,7 @@ export default function Volume() {
   return (
     <>
       <Header />
-      <main className='mx-auto mt-8 flex min-h-[calc(100vh-62px)] max-w-xs md:max-w-md lg:max-w-lg flex-col'>
+      <main className='mx-auto mt-8 flex min-h-[calc(100vh-170px)] max-w-xs md:max-w-md lg:max-w-lg flex-col'>
         <h1 className='text-center text-white-200 text-xs mb-4'>
           Selecione o dia da semana!
         </h1>

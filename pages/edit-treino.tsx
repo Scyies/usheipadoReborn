@@ -112,8 +112,6 @@ export default function EditTreino() {
 
   useEffect(() => {
     fetchDiasData(setDiasData);
-    const userStorage = localStorage.getItem('token');
-    userStorage && setLoggedUser(userStorage!);
   }, []);
   useEffect(() => {
     fetchTreinosByDia(setEditableTreino, selectRecoilValue, userIdValue);
@@ -124,7 +122,7 @@ export default function EditTreino() {
   return (
     <>
       <Header />
-      <main className='mx-auto max-w-xs md:max-w-md lg:max-w-lg mt-8 flex flex-col items-center min-h-screen'>
+      <main className=' mx-auto max-w-xs md:max-w-md lg:max-w-lg mt-8 flex flex-col items-center min-h-[calc(100vh-170px)]'>
         <h1 className='text-white-200 text-xs mb-4'>
           Selecione o dia da semana!
         </h1>

@@ -2,6 +2,7 @@ import React from 'react';
 import { Dias } from '../pages';
 import { Treino } from '../utils/fetchTreinosByDia';
 import * as RadixSelect from '@radix-ui/react-select';
+import { CaretLeft } from 'phosphor-react';
 
 interface Props extends RadixSelect.SelectProps {
   selectData: Dias[] | Treino[];
@@ -17,14 +18,14 @@ export default function Select({
 }: Props) {
   return (
     <RadixSelect.Root name='diasId' {...rest}>
-      <RadixSelect.Trigger className='bg-gray-700 text-white-200 py-3 px-4 rounded outline-none w-full max-w-[150px]'>
+      <RadixSelect.Trigger className='bg-gray-700 text-white-200 py-3 px-4 rounded outline-none w-fit min-w-[140px]'>
         <RadixSelect.Value placeholder={defaultOptionValue}>
           {selectedValue}
         </RadixSelect.Value>
         <RadixSelect.Icon className='ml-2' />
       </RadixSelect.Trigger>
 
-      <RadixSelect.Content className='text-white-200 flex justify-center text-center bg-gray-700 rounded outline-none w-full max-w-[150px] z-50'>
+      <RadixSelect.Content className='text-white-200 flex justify-center text-center bg-gray-700 rounded outline-none w-fit min-w-[170px] z-50'>
         <RadixSelect.ScrollUpButton />
         <RadixSelect.Viewport>
           <RadixSelect.Item
@@ -39,9 +40,12 @@ export default function Select({
                 value={dia.name!}
                 key={dia.id}
                 textValue={dia?.name}
-                className='outline-none hover:bg-gray-300 px-4 py-3 text-center'
+                className='flex items-center justify-center gap-2 outline-none hover:bg-gray-300 px-4 py-3 text-center'
               >
                 <RadixSelect.ItemText>{dia?.name}</RadixSelect.ItemText>
+                <RadixSelect.ItemIndicator>
+                  <CaretLeft size={15} weight='bold' />
+                </RadixSelect.ItemIndicator>
               </RadixSelect.Item>
             ))}
         </RadixSelect.Viewport>

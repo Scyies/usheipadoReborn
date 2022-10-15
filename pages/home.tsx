@@ -9,7 +9,7 @@ export default function Home() {
   return (
     <>
       <Header />
-      <main className='min-h-[calc(100vh-82px)] w-full mx-auto max-w-xs md:max-w-md lg:max-w-lg mt-8 flex flex-col items-center'>
+      <main className='min-h-[calc(100vh-170px)] h-full w-full mx-auto max-w-xs md:max-w-md lg:max-w-lg mt-8 flex flex-col items-center'>
         <p className='text-xs text-white-200 text-center mb-4'>
           Selecione o dia da semana!
         </p>

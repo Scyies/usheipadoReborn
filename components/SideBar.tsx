@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import React from 'react';
+import React, { useEffect } from 'react';
 import classNames from 'classnames';
 import {
   House,
@@ -37,6 +37,16 @@ export default function SideBar({ status }: SideProps) {
     toast.success('Usuário desconectado com sucesso!');
     router.push('/');
   }
+
+  function logOut() {
+    localStorage.removeItem('token');
+    signOut();
+  }
+
+  useEffect(() => {
+    const userStorage = localStorage.getItem('token');
+    userStorage && setLoggedUser(userStorage!);
+  }, []);
   return (
     <aside
       className={classNames(
@@ -46,7 +56,6 @@ export default function SideBar({ status }: SideProps) {
           'translate-x-0': status === 'open',
         }
       )}
-      // onBlur={onBlur}
     >
       <section className='flex flex-col justify-center text-center gap-4'>
         <Link href='/home'>
@@ -80,7 +89,7 @@ export default function SideBar({ status }: SideProps) {
           </a>
         </Link>
         {userInfo && (
-          <Button onClick={() => signOut()}>
+          <Button onClick={() => logOut()}>
             <SignOut size={22} />
             Sair
           </Button>

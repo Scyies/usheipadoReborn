@@ -76,7 +76,7 @@ export default function NovoTreino() {
       <section className='mx-auto w-full max-w-xs md:max-w-md lg:max-w-lg'>
         <form
           onSubmit={handleNovoTreino}
-          className='max-w-xs mx-auto mt-8 flex justify-center flex-col w-full'
+          className='max-w-xs md:max-w-md lg:max-w-lg mx-auto mt-8 flex justify-center flex-col w-full'
         >
           <div className='self-center mb-8'>
             <Select
