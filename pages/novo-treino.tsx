@@ -8,7 +8,6 @@ import Button from '../components/Button';
 import { Input } from '../components/Input';
 import { supabase } from '../supa';
 import { toast } from 'react-toastify';
-import { useRouter } from 'next/router';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 
@@ -17,30 +16,28 @@ export default function NovoTreino() {
   const selectRecoilValue = useRecoilValue(diasSelectState);
   const [diasData, setDiasData] = useState<Dias[]>([]);
   const userIdValue = useRecoilValue(userId);
-  const router = useRouter();
+  const [newTreinoInputs, setNewTreinoInputs] = useState({
+    name: '',
+    reps: '',
+    sets: '',
+  });
 
-  console.log(selectRecoilValue);
+  function handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
+    setNewTreinoInputs((prev) => ({
+      ...prev,
+      [event.target.name]: event.target.value,
+    }));
+  }
 
   async function handleNovoTreino(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    const formData = new FormData(event.target as HTMLFormElement);
-    const input = Object.fromEntries(formData);
-
-    const treinoInput = {
-      name: String(input.name),
-      reps: String(input.reps),
-      sets: Number(input.sets),
-      diasId: String(selectRecoilValue),
-      user_id: userIdValue,
-    };
-
     if (
-      !treinoInput.name ||
-      !treinoInput.reps ||
-      !treinoInput.sets ||
-      !treinoInput.diasId ||
-      !treinoInput.user_id
+      !newTreinoInputs.name ||
+      !newTreinoInputs.reps ||
+      !newTreinoInputs.sets ||
+      !selectRecoilValue ||
+      !userIdValue
     ) {
       toast.error('Favor preencher todos os campos!');
       return;
@@ -50,19 +47,21 @@ export default function NovoTreino() {
       .from('Treinos')
       .insert([
         {
-          name: treinoInput.name,
-          reps: treinoInput.reps,
-          sets: treinoInput.sets,
-          diasId: treinoInput.diasId,
-          user_id: treinoInput.user_id,
+          name: newTreinoInputs.name,
+          reps: newTreinoInputs.reps,
+          sets: Number(newTreinoInputs.sets),
+          diasId: selectRecoilValue,
+          user_id: userIdValue,
         },
       ])
       .select('*');
 
     if (error) {
-      toast.error(error.message);
+      toast.error('Ocorreu um erro inesperado');
+      console.log(error);
     }
     if (data) {
+      setNewTreinoInputs(() => ({ name: '', reps: '', sets: '' }));
       toast.success('Treino adicionado com sucesso!');
     }
   }
@@ -95,19 +94,33 @@ export default function NovoTreino() {
               placeholder='Ex: Barra fixa'
               name='name'
               autoComplete='off'
+              value={newTreinoInputs.name}
+              onChange={handleInputChange}
             />
           </div>
           <div className='flex flex-col mt-8 gap-2'>
             <label htmlFor='' className='text-white-200 text-xs'>
               Repetições
             </label>
-            <Input placeholder='Ex: 8-10' name='reps' autoComplete='off' />
+            <Input
+              placeholder='Ex: 8-10'
+              name='reps'
+              autoComplete='off'
+              value={newTreinoInputs.reps}
+              onChange={handleInputChange}
+            />
           </div>
           <div className='flex flex-col mt-8 mb-8 gap-2'>
             <label htmlFor='' className='text-white-200 text-xs'>
               Séries
             </label>
-            <Input placeholder='Ex: 4' name='sets' autoComplete='off' />
+            <Input
+              placeholder='Ex: 4'
+              name='sets'
+              autoComplete='off'
+              value={newTreinoInputs.sets}
+              onChange={handleInputChange}
+            />
           </div>
           <div className='self-center mb-4'>
             <Button type='submit'>Adicionar</Button>

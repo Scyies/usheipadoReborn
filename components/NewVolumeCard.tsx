@@ -23,6 +23,7 @@ export function NewVolumeCard({ setValue, input, index }: NewVolumeCardProps) {
             onChange={(event) => setValue(index, event)}
             name='peso'
             id='peso'
+            autoComplete='off'
           />
         </div>
       </div>
@@ -36,6 +37,7 @@ export function NewVolumeCard({ setValue, input, index }: NewVolumeCardProps) {
             onChange={(event) => setValue(index, event)}
             name='reps'
             id='reps'
+            autoComplete='off'
           />
         </div>
       </div>
@@ -49,6 +51,7 @@ export function NewVolumeCard({ setValue, input, index }: NewVolumeCardProps) {
             onChange={(event) => setValue(index, event)}
             name='sets'
             id='sets'
+            autoComplete='off'
           />
         </div>
       </div>

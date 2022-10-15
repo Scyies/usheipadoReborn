@@ -24,8 +24,6 @@ export default function EditTreino() {
   const selectRecoilValue = useRecoilValue(diasSelectState);
   const [editableTreino, setEditableTreino] = useState<Treino[]>([]);
 
-  const setLoggedUser = useSetRecoilState(userId);
-
   const userIdValue = useRecoilValue(userId);
 
   const [inputFields, setInputFields] = useState<TreinoInput[]>([]);
