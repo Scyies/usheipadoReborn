@@ -64,8 +64,11 @@ export default function SideBar({ status }: SideProps) {
             Home
           </a>
         </Link>
-        <Link href='/'>
-          <a className='flex items-center justify-center gap-2 bg-orange-500 text-gray-900 rounded px-4 py-3 font-medium hover:bg-orange-300 transition-colors'>
+        <Link href='https://www.calculator.net/body-fat-calculator.html'>
+          <a
+            target='_blank'
+            className='flex items-center justify-center gap-2 bg-orange-500 text-gray-900 rounded px-4 py-3 font-medium hover:bg-orange-300 transition-colors'
+          >
             <Calculator size={22} />
             BF Calc
           </a>

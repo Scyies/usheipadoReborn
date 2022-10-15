@@ -11,48 +11,53 @@ import Footer from '../components/Footer';
 import Header from '../components/Header';
 import { EditCard } from '../components/EditCard';
 import { TreinoCard } from '../components/TreinoCard';
+import { removeFromArrayById } from '../utils/arraySpliceById';
 
 export interface TreinoInput {
-  name: string | undefined;
-  reps: string | undefined;
-  sets: string | undefined;
+  id: string;
+  name: string;
+  reps: string;
+  sets: string | number;
 }
 
 export default function EditTreino() {
   const [diasData, setDiasData] = useState<Dias[]>([]);
+
   const setDiasSelect = useSetRecoilState(diasSelectState);
+
   const selectRecoilValue = useRecoilValue(diasSelectState);
-  const [editableTreino, setEditableTreino] = useState<Treino[]>([]);
+
+  const [treinosList, setTreinosList] = useState<Treino[]>([]);
 
   const userIdValue = useRecoilValue(userId);
 
-  const [inputFields, setInputFields] = useState<TreinoInput[]>([]);
+  const [inputFields, setInputFields] = useState<TreinoInput>({
+    name: '',
+    reps: '',
+    sets: '',
+    id: '',
+  });
 
-  const [toggleEdit, setToggleEdit] = useState<number | null>(null);
+  const [toggleEdit, setToggleEdit] = useState<string | null>(null);
 
   const [changeType, setChangeType] = useState<'edit' | 'delete' | ''>('');
 
-  function handleFormChange(
-    index: number,
-    event: React.ChangeEvent<HTMLInputElement>
-  ) {
-    let data: TreinoInput[] = [...inputFields];
-    data[index][event.target.name as keyof TreinoInput] = event.target.value;
-    setInputFields(data);
+  function addEditBoxFields(id: string) {
+    const selectedTreino = treinosList.find((treino) => id === treino.id);
+    setInputFields((prev) => ({
+      ...prev,
+      name: selectedTreino?.name!,
+      reps: selectedTreino?.reps!,
+      sets: Number(selectedTreino?.sets!),
+      id: selectedTreino?.id!,
+    }));
   }
 
-  function addFieldsByTreinos(editableTreino: Treino[]) {
-    let newField: TreinoInput[] = [];
-    editableTreino.map((treino) => {
-      let field = {
-        name: treino.name,
-        reps: treino.reps,
-        sets: String(treino.sets),
-        id: treino.id,
-      };
-      newField.push(field);
-    });
-    setInputFields(newField);
+  function handleFormInput(event: React.ChangeEvent<HTMLInputElement>) {
+    setInputFields((prev) => ({
+      ...prev,
+      [event.target.name]: event.target.value,
+    }));
   }
 
   async function handleTreinoUpdate(
@@ -70,21 +75,22 @@ export default function EditTreino() {
       const { data, error } = await supabase
         .from('Treinos')
         .update({
-          name: inputFields[toggleEdit!].name,
-          reps: inputFields[toggleEdit!].reps,
-          sets: Number(inputFields[toggleEdit!].sets),
+          name: inputFields.name,
+          reps: inputFields.reps,
+          sets: Number(inputFields.sets),
         })
         .match({
-          id: editableTreino[toggleEdit!].id,
+          id: inputFields.id,
         })
         .select('*');
 
-      if (data) {
-        toast.success('Treino atualizado com sucesso!');
-      }
       if (error) {
-        console.log(error);
-        toast.error(error.message);
+        console.error(error);
+        return toast.error('Ocorreu um erro inesperado');
+      }
+
+      if (data) {
+        return toast.success('Treino atualizado com sucesso!');
       }
     }
 
@@ -92,17 +98,20 @@ export default function EditTreino() {
       const { error } = await supabase
         .from('Treinos')
         .delete()
-        .eq('id', editableTreino[toggleEdit!].id);
-      toast.success('Treino excluído com sucesso!');
+        .eq('id', inputFields.id);
       if (error) {
-        toast.error(error.message);
+        console.error(error);
+        return toast.error('Não foi possível excluir o treino');
       }
+      removeFromArrayById(treinosList, inputFields.id);
+      toast.success('Treino excluído com sucesso!');
     }
   }
 
-  function toggleEditor(index: number) {
+  function toggleEditor(id: string) {
     if (toggleEdit === null) {
-      setToggleEdit(index);
+      setToggleEdit(id);
+      addEditBoxFields(id);
     } else {
       setToggleEdit(null);
     }
@@ -112,11 +121,8 @@ export default function EditTreino() {
     fetchDiasData(setDiasData);
   }, []);
   useEffect(() => {
-    fetchTreinosByDia(setEditableTreino, selectRecoilValue, userIdValue);
+    fetchTreinosByDia(setTreinosList, selectRecoilValue, userIdValue);
   }, [selectRecoilValue, userIdValue]);
-  useEffect(() => {
-    addFieldsByTreinos(editableTreino);
-  }, [editableTreino]);
   return (
     <>
       <Header />
@@ -136,22 +142,22 @@ export default function EditTreino() {
           onSubmit={(event) => handleTreinoUpdate(event, changeType)}
         >
           {selectRecoilValue.length > 0 &&
-            inputFields.map((input, index) => (
+            treinosList.map((treino) => (
               <div
-                key={index}
+                key={treino.id}
                 className='max-w-[300px] md:max-w-md lg:max-w-lg w-full overflow-hidden'
               >
                 <TreinoCard
                   editState={toggleEdit}
                   edittor={toggleEditor}
-                  index={index}
-                  treino={input?.name!}
+                  id={treino.id!}
+                  treino={treino?.name!}
                 />
-                {toggleEdit == index && (
+                {toggleEdit == treino.id && (
                   <EditCard
-                    index={index}
-                    input={input}
-                    setValue={handleFormChange}
+                    id={treino.id}
+                    treino={treino}
+                    setValue={handleFormInput}
                     mutationType={setChangeType}
                   />
                 )}

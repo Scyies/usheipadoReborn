@@ -13,12 +13,12 @@ import { TreinoCard } from '../components/TreinoCard';
 import { NewVolumeCard } from '../components/NewVolumeCard';
 
 export interface VolumeInput {
-  nome: string;
+  name?: string;
   peso: string;
   reps: string;
   sets: string;
   dia: Date | null | string;
-  id: string;
+  id?: string;
 }
 
 export default function Volume() {
@@ -33,58 +33,57 @@ export default function Volume() {
 
   const [treinosList, setTreinosList] = useState<Treino[]>([]);
 
-  const [inputFields, setInputFields] = useState<VolumeInput[]>([]);
+  const [inputFields, setInputFields] = useState<VolumeInput>({
+    name: '',
+    peso: '',
+    reps: '',
+    sets: '',
+    dia: null,
+    id: '',
+  });
 
-  const [toggleEdit, setToggleEdit] = useState<number | null>(null);
+  const [toggleEdit, setToggleEdit] = useState<string | null>(null);
 
-  function handleFormChange(
-    index: number,
-    event: React.ChangeEvent<HTMLInputElement>
-  ) {
-    let data: VolumeInput[] = [...inputFields];
-    data[index][event.target.name as keyof VolumeInput] = event.target.value;
-    setInputFields(data);
+  function handleFormInput(event: React.ChangeEvent<HTMLInputElement>) {
+    setInputFields((prev) => ({
+      ...prev,
+      [event.target.name]: event.target.value,
+    }));
   }
 
-  function addFieldsByTreinos(treinosList: Treino[]) {
-    let newField: VolumeInput[] = [];
-    treinosList.map((treino) => {
-      let field = {
-        nome: treino.name,
-        peso: '',
-        reps: '',
-        sets: '',
-        dia: null,
-        id: treino.id!,
-      };
-      newField.push(field);
-    });
-    setInputFields(newField);
+  function addEditBoxFields(id: string) {
+    const selectedTreino = treinosList.find((treino) => id === treino.id);
+    setInputFields((prev) => ({
+      ...prev,
+      name: selectedTreino?.name,
+      id: selectedTreino?.id,
+    }));
   }
 
-  function toggleEditor(index: number) {
+  function toggleEditor(id: string) {
     if (toggleEdit === null) {
-      setToggleEdit(index);
+      setToggleEdit(id);
+      addEditBoxFields(id);
     } else {
       setToggleEdit(null);
     }
   }
 
-  async function handleNovoVolume(event: React.FormEvent<HTMLFormElement>) {
+  async function addNewVolume(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     const totalVolume =
-      Number(inputFields[toggleEdit!].peso) *
-      Number(inputFields[toggleEdit!].reps) *
-      Number(inputFields[toggleEdit!].sets);
+      Number(inputFields.peso) *
+      Number(inputFields.reps) *
+      Number(inputFields.sets);
 
     const { data, error } = await supabase
       .from('Volumes')
       .insert([
         {
           vol: Math.round(totalVolume),
-          dia: inputFields[toggleEdit!].dia,
-          treinoId: inputFields[toggleEdit!].id,
+          dia: inputFields.dia,
+          treinoId: inputFields.id,
         },
       ])
       .select('*');
@@ -106,9 +105,6 @@ export default function Volume() {
   useEffect(() => {
     fetchTreinosByDia(setTreinosList, selectRecoilValue, userIdValue);
   }, [selectRecoilValue, userIdValue]);
-  useEffect(() => {
-    addFieldsByTreinos(treinosList);
-  }, [treinosList]);
   return (
     <>
       <Header />
@@ -129,26 +125,25 @@ export default function Volume() {
           Selecione o treino em que quer salvar o volume de carga
         </h2>
         <form
-          onSubmit={handleNovoVolume}
+          onSubmit={addNewVolume}
           className='my-8 flex flex-col gap-4 items-center w-full'
         >
           {selectRecoilValue.length > 0 &&
-            inputFields.map((input, index) => (
+            treinosList.map((treino, index) => (
               <div
-                key={index}
+                key={treino.id}
                 className='max-w-[300px] md:max-w-md lg:max-w-lg w-full overflow-hidden'
               >
                 <TreinoCard
                   editState={toggleEdit}
                   edittor={toggleEditor}
-                  index={index}
-                  treino={input?.nome!}
+                  id={treino.id!}
+                  treino={treino?.name!}
                 />
-                {toggleEdit == index && (
+                {toggleEdit == treino.id && (
                   <NewVolumeCard
-                    index={index}
-                    input={input}
-                    setValue={handleFormChange}
+                    id={inputFields.id!}
+                    setValue={handleFormInput}
                   />
                 )}
               </div>

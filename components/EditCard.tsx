@@ -6,16 +6,16 @@ import Button from './Button';
 import { Input } from './Input';
 
 interface EditCardProps {
-  setValue: (index: number, event: React.ChangeEvent<HTMLInputElement>) => void;
-  input: TreinoInput;
-  index: number;
+  setValue: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  treino: Treino;
+  id: string;
   mutationType: Dispatch<React.SetStateAction<'' | 'edit' | 'delete'>>;
 }
 
 export function EditCard({
   setValue,
-  input,
-  index,
+  treino,
+  id,
   mutationType,
 }: EditCardProps) {
   return (
@@ -27,8 +27,8 @@ export function EditCard({
         <div className='col-span-2'>
           <Input
             placeholder='RDL'
-            defaultValue={input.name}
-            onChange={(event) => setValue(index, event)}
+            defaultValue={treino.name}
+            onChange={(event) => setValue(event)}
             name='name'
           />
         </div>
@@ -40,9 +40,9 @@ export function EditCard({
         <div className='col-span-2'>
           <Input
             placeholder='6-8'
-            defaultValue={input.reps}
+            defaultValue={treino.reps}
             name='reps'
-            onChange={(event) => setValue(index, event)}
+            onChange={(event) => setValue(event)}
           />
         </div>
       </div>
@@ -53,9 +53,9 @@ export function EditCard({
         <div className='col-span-2'>
           <Input
             placeholder='3'
-            defaultValue={input.sets}
+            defaultValue={treino.sets}
             name='sets'
-            onChange={(event) => setValue(index, event)}
+            onChange={(event) => setValue(event)}
           />
         </div>
       </div>
