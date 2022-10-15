@@ -136,12 +136,15 @@ export default function EditTreino() {
           selectedValue={selectRecoilValue}
         />
         <form
-          className='my-8 flex flex-col gap-4 items-center'
+          className='my-8 w-full flex flex-col gap-4 items-center'
           onSubmit={(event) => handleTreinoUpdate(event, changeType)}
         >
           {selectRecoilValue.length > 0 &&
             inputFields.map((input, index) => (
-              <div key={index} className='max-w-[300px] w-full overflow-hidden'>
+              <div
+                key={index}
+                className='max-w-[300px] md:max-w-md lg:max-w-lg w-full overflow-hidden'
+              >
                 <TreinoCard
                   editState={toggleEdit}
                   edittor={toggleEditor}
