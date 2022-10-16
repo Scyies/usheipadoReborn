@@ -54,7 +54,7 @@ export default function Table() {
             <td className='px-4 py-3'>Repetições</td>
           </tr>
         </thead>
-        <tbody className='text-center text-xs'>
+        <tbody className='text-center bg-gray-700 text-xs'>
           {tableTreinos &&
             tableTreinos.map((treino: Treino) => (
               <tr key={treino.id}>
