@@ -10,6 +10,7 @@ import { supabase } from '../supa';
 import { toast } from 'react-toastify';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import { Loading } from '../components/Loading';
 
 export default function NovoTreino() {
   const setDiasSelect = useSetRecoilState(diasSelectState);
@@ -22,6 +23,8 @@ export default function NovoTreino() {
     sets: '',
   });
 
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
   function handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
     setNewTreinoInputs((prev) => ({
       ...prev,
@@ -31,6 +34,8 @@ export default function NovoTreino() {
 
   async function handleNovoTreino(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+
+    setIsLoading(true);
 
     if (
       !newTreinoInputs.name ||
@@ -59,10 +64,14 @@ export default function NovoTreino() {
     if (error) {
       toast.error('Ocorreu um erro inesperado');
       console.log(error);
+      setIsLoading(false);
+      return;
     }
     if (data) {
       setNewTreinoInputs(() => ({ name: '', reps: '', sets: '' }));
       toast.success('Treino adicionado com sucesso!');
+      setIsLoading(false);
+      return;
     }
   }
 
@@ -72,7 +81,7 @@ export default function NovoTreino() {
   return (
     <>
       <Header />
-      <section className='mx-auto w-full max-w-xs md:max-w-md lg:max-w-lg'>
+      <section className='mx-auto min-h-[calc(100vh-170px)] w-full max-w-xs md:max-w-md lg:max-w-lg'>
         <form
           onSubmit={handleNovoTreino}
           className='max-w-xs md:max-w-md lg:max-w-lg mx-auto mt-8 flex justify-center flex-col w-full'
@@ -120,10 +129,13 @@ export default function NovoTreino() {
               autoComplete='off'
               value={newTreinoInputs.sets}
               onChange={handleInputChange}
+              type='number'
             />
           </div>
           <div className='self-center mb-4'>
-            <Button type='submit'>Adicionar</Button>
+            <Button type='submit'>
+              {!isLoading ? 'Adicionar' : <Loading />}
+            </Button>
           </div>
         </form>
       </section>

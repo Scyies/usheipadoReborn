@@ -11,6 +11,7 @@ import { supabase } from '../supa';
 import Logo from '../assets/logo.svg';
 import { Input } from '../components/Input';
 import { EnvelopeSimple, IdentificationBadge, LockKey } from 'phosphor-react';
+import { Loading } from '../components/Loading';
 
 export type Dias = {
   id: string;
@@ -21,6 +22,7 @@ export type Dias = {
 const Home: NextPage = () => {
   const [formType, setFormType] = useState<'login' | 'sigin'>('login');
   const setLoggedUser = useSetRecoilState(userId);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const router = useRouter();
 
@@ -31,6 +33,8 @@ const Home: NextPage = () => {
     const input = Object.fromEntries(formData);
 
     if (formType === 'sigin') {
+      setIsLoading(true);
+
       if (!input) return toast.error('Favor preencher todos os campos!');
 
       if (input.senha !== input.confirmarSenha) {
@@ -50,6 +54,7 @@ const Home: NextPage = () => {
       if (error) {
         console.log(error);
         toast.error(error.message);
+        setIsLoading(false);
         return;
       }
 
@@ -62,11 +67,13 @@ const Home: NextPage = () => {
         setLoggedUser(data['session']?.user.id!);
 
         toast.success('Usuário criado com sucesso!');
+        setIsLoading(false);
         return router.push('/home');
       }
     }
 
     if (formType === 'login') {
+      setIsLoading(true);
       const { data, error } = await supabase.auth.signInWithPassword({
         email: String(input.email),
         password: String(input.password),
@@ -75,6 +82,7 @@ const Home: NextPage = () => {
       if (error) {
         console.log(error);
         toast.error(error.message);
+        setIsLoading(false);
         return;
       }
 
@@ -85,6 +93,7 @@ const Home: NextPage = () => {
         );
         setLoggedUser(data['session']?.user.id!);
         toast.success('Login realizado com sucesso!');
+        setIsLoading(false);
         return router.push('/home');
       }
     }
@@ -122,10 +131,12 @@ const Home: NextPage = () => {
         <main className='flex flex-col min-h-screen justify-center'>
           <header className='flex flex-col items-center justify-center gap-4 mt-10 select-none'>
             <Image src={Logo} alt='' className='w-[135px] h-[60px]' />
-            <span className='text-white-200 text-lg'>USheipado</span>
+            <span className='text-white-200 text-lg md:text-xl lg:text-2xl'>
+              USheipado
+            </span>
           </header>
           <section className='w-full mx-auto max-w-xs md:max-w-md lg:max-w-lg my-6 flex flex-col justify-center'>
-            <h1 className='text-gray-300 text-xs text-center select-none'>
+            <h1 className='text-gray-300 text-xs md:text-sm text-center select-none'>
               {formType === 'login'
                 ? 'Faça o login e comece a controlar seu treino!'
                 : 'Crie sua conta agora mesmo!'}
@@ -160,7 +171,9 @@ const Home: NextPage = () => {
                     placeholder='*********'
                   />
                 </div>
-                <Button type='submit'>Entrar na plataforma</Button>
+                <Button type='submit' loading={isLoading}>
+                  {!isLoading ? 'Entrar na plataforma' : <Loading />}
+                </Button>
               </form>
             ) : (
               <form

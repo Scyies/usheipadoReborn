@@ -1,7 +1,7 @@
 import type { AppProps } from 'next/app';
 import '../styles/globals.css';
 import { RecoilRoot } from 'recoil';
-import { ToastContainer } from 'react-toastify';
+import { Slide, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.min.css';
 
 function MyApp({ Component, pageProps }: AppProps) {
@@ -19,6 +19,8 @@ function MyApp({ Component, pageProps }: AppProps) {
         pauseOnHover
         draggable
         theme='dark'
+        transition={Slide}
+        limit={1}
       />
     </RecoilRoot>
   );

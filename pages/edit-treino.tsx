@@ -31,6 +31,8 @@ export default function EditTreino() {
 
   const userIdValue = useRecoilValue(userId);
 
+  const [isLoading, setIsLoading] = useState(false);
+
   const [inputFields, setInputFields] = useState<TreinoInput>({
     name: '',
     reps: '',
@@ -65,6 +67,7 @@ export default function EditTreino() {
     type: string
   ) {
     event.preventDefault();
+    setIsLoading(true);
 
     if (toggleEdit == null) {
       toast.error('Favor selecionar o campo a ser alterado!');
@@ -86,10 +89,12 @@ export default function EditTreino() {
 
       if (error) {
         console.error(error);
+        setIsLoading(false);
         return toast.error('Ocorreu um erro inesperado');
       }
 
       if (data) {
+        setIsLoading(false);
         return toast.success('Treino atualizado com sucesso!');
       }
     }
@@ -101,8 +106,10 @@ export default function EditTreino() {
         .eq('id', inputFields.id);
       if (error) {
         console.error(error);
+        setIsLoading(false);
         return toast.error('Não foi possível excluir o treino');
       }
+      setIsLoading(false);
       removeFromArrayById(treinosList, inputFields.id);
       toast.success('Treino excluído com sucesso!');
     }
@@ -159,6 +166,7 @@ export default function EditTreino() {
                     treino={treino}
                     setValue={handleFormInput}
                     mutationType={setChangeType}
+                    loading={isLoading}
                   />
                 )}
               </div>

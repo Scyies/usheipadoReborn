@@ -1,15 +1,16 @@
 import { PencilSimpleLine, TrashSimple } from 'phosphor-react';
-import { ChangeEvent, Dispatch, FormEvent, MouseEventHandler } from 'react';
-import { TreinoInput } from '../pages/edit-treino';
+import { Dispatch } from 'react';
 import { Treino } from '../utils/fetchTreinosByDia';
 import Button from './Button';
 import { Input } from './Input';
+import { Loading } from './Loading';
 
 interface EditCardProps {
   setValue: (event: React.ChangeEvent<HTMLInputElement>) => void;
   treino: Treino;
   id: string;
   mutationType: Dispatch<React.SetStateAction<'' | 'edit' | 'delete'>>;
+  loading: boolean;
 }
 
 export function EditCard({
@@ -17,6 +18,7 @@ export function EditCard({
   treino,
   id,
   mutationType,
+  loading,
 }: EditCardProps) {
   return (
     <div className='bg-transparent border-gray-300 border-r border-l border-b rounded flex flex-col gap-4 p-4 mt-1 animate-slideIn z-0'>
@@ -56,6 +58,7 @@ export function EditCard({
             defaultValue={treino.sets}
             name='sets'
             onChange={(event) => setValue(event)}
+            type='number'
           />
         </div>
       </div>
@@ -64,6 +67,7 @@ export function EditCard({
           className='flex text-orange-500 gap-2'
           onClick={() => mutationType('delete')}
           type='submit'
+          loading={loading}
         >
           <TrashSimple size={24} /> Excluir
         </Button>
@@ -71,6 +75,7 @@ export function EditCard({
           className='flex text-blue-500 gap-2'
           onClick={() => mutationType('edit')}
           type='submit'
+          loading={loading}
         >
           <PencilSimpleLine size={24} /> Editar
         </Button>
