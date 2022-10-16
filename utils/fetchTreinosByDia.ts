@@ -1,5 +1,4 @@
 import { Dispatch, SetStateAction } from 'react';
-import { Dias } from '../pages';
 import { supabase } from '../supa';
 import { sortTreinoByCreation } from './sortTreinosByCreation';
 
@@ -38,12 +37,14 @@ export async function fetchTreinosByDia(
 
 export async function fetchTreinosNameByDia(
   setter: Dispatch<SetStateAction<Treino[]>>,
-  diasId: string
+  diasId: string,
+  userId: string
 ) {
   const { data, error } = await supabase
     .from('Treinos')
     .select('name, id')
-    .eq('diasId', diasId);
+    .eq('diasId', diasId)
+    .eq('user_id', userId);
 
   if (error) {
     console.log(error.message);

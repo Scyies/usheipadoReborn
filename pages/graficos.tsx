@@ -26,6 +26,8 @@ export default function Charts() {
   const [treinoSelect, setTreinoSelect] = useState<string>('');
   const [volumeData, setVolumeData] = useState<Volume[]>([]);
 
+  const userId = localStorage.getItem('token');
+
   const selectedTreinoId = treinoSelectState.find(
     (treino) => treino.name === treinoSelect
   );
@@ -33,12 +35,12 @@ export default function Charts() {
   useEffect(() => {
     fetchDiasData(setDiasData);
     if (selectRecoilValue.length > 0) {
-      fetchTreinosNameByDia(setTreinoSelectState, selectRecoilValue);
+      fetchTreinosNameByDia(setTreinoSelectState, selectRecoilValue, userId!);
     }
     if (treinoSelect.length > 0) {
       fetchVolumeByTreino(setVolumeData, selectedTreinoId?.id!);
     }
-  }, [selectRecoilValue, selectedTreinoId?.id!]);
+  }, [selectRecoilValue, selectedTreinoId?.id!, userId]);
   return (
     <>
       <Header />
