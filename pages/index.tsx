@@ -99,6 +99,12 @@ const Home: NextPage = () => {
     }
   }
 
+  const user = localStorage.getItem('token');
+
+  if (user!.length > 0) {
+    router.push('/home');
+  }
+
   return (
     <div>
       <Head>
