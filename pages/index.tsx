@@ -2,7 +2,7 @@ import type { NextPage } from 'next';
 import Image from 'next/image';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { useSetRecoilState } from 'recoil';
 import { userId } from '../atom/atom';
@@ -99,11 +99,10 @@ const Home: NextPage = () => {
     }
   }
 
-  const user = localStorage.getItem('token');
-
-  if (user!.length > 0) {
-    router.push('/home');
-  }
+  useEffect(() => {
+    const user = localStorage.getItem('token');
+    user?.length! > 0 && router.push('/home');
+  }, []);
 
   return (
     <div>
