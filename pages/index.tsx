@@ -52,18 +52,14 @@ const Home: NextPage = () => {
       });
 
       if (error) {
-        console.log(error);
+        console.error(error);
         toast.error(error.message);
         setIsLoading(false);
         return;
       }
 
       if (data) {
-        console.log(data);
-        const session = localStorage.setItem(
-          'token',
-          data['session']?.user.id!
-        );
+        localStorage.setItem('token', data['session']?.user.id!);
         setLoggedUser(data['session']?.user.id!);
 
         toast.success('Usuário criado com sucesso!');
@@ -87,10 +83,7 @@ const Home: NextPage = () => {
       }
 
       if (data) {
-        const session = localStorage.setItem(
-          'token',
-          data['session']?.user.id!
-        );
+        localStorage.setItem('token', data['session']?.user.id!);
         setLoggedUser(data['session']?.user.id!);
         toast.success('Login realizado com sucesso!');
         setIsLoading(false);

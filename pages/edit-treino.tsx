@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { Dias } from '.';
-import { diasSelectState, userId } from '../atom/atom';
+import { diasSelectState, userId, treinosList } from '../atom/atom';
 import Select from '../components/Select';
 import { fetchDiasData } from '../utils/fetchDias';
 import { fetchTreinosByDia, Treino } from '../utils/fetchTreinosByDia';
@@ -12,6 +12,7 @@ import Header from '../components/Header';
 import { EditCard } from '../components/EditCard';
 import { TreinoCard } from '../components/TreinoCard';
 import { removeFromArrayById } from '../utils/arraySpliceById';
+import { filteredTreinos } from '../atom/selectors';
 
 export interface TreinoInput {
   id: string;
@@ -27,7 +28,11 @@ export default function EditTreino() {
 
   const selectRecoilValue = useRecoilValue(diasSelectState);
 
-  const [treinosList, setTreinosList] = useState<Treino[]>([]);
+  // const [treinosList, setTreinosList] = useState<Treino[]>([]);
+
+  const setTreinos = useSetRecoilState(treinosList);
+
+  const treinosLista = useRecoilValue(filteredTreinos);
 
   const userIdValue = useRecoilValue(userId);
 
@@ -45,7 +50,7 @@ export default function EditTreino() {
   const [changeType, setChangeType] = useState<'edit' | 'delete' | ''>('');
 
   function addEditBoxFields(id: string) {
-    const selectedTreino = treinosList.find((treino) => id === treino.id);
+    const selectedTreino = treinosLista.find((treino) => id === treino.id);
     setInputFields((prev) => ({
       ...prev,
       name: selectedTreino?.name!,
@@ -110,7 +115,7 @@ export default function EditTreino() {
         return toast.error('Não foi possível excluir o treino');
       }
       setIsLoading(false);
-      removeFromArrayById(treinosList, inputFields.id);
+      removeFromArrayById(treinosLista, inputFields.id);
       toast.success('Treino excluído com sucesso!');
     }
   }
@@ -128,8 +133,10 @@ export default function EditTreino() {
     fetchDiasData(setDiasData);
   }, []);
   useEffect(() => {
-    fetchTreinosByDia(setTreinosList, selectRecoilValue, userIdValue);
-  }, [selectRecoilValue, userIdValue]);
+    if (userIdValue) {
+      fetchTreinosByDia(setTreinos, userIdValue);
+    }
+  }, [setTreinos, userIdValue]);
   return (
     <>
       <Header />
@@ -149,7 +156,7 @@ export default function EditTreino() {
           onSubmit={(event) => handleTreinoUpdate(event, changeType)}
         >
           {selectRecoilValue.length > 0 &&
-            treinosList.map((treino) => (
+            treinosLista.map((treino) => (
               <div
                 key={treino.id}
                 className='max-w-[300px] md:max-w-md lg:max-w-lg w-full overflow-hidden'

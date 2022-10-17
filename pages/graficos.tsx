@@ -1,8 +1,18 @@
 import { useEffect, useState } from 'react';
 import { Dias } from '.';
-import { diasSelectState } from '../atom/atom';
+import {
+  diasSelectState,
+  treinosList,
+  treinosSelectState,
+  userId,
+  volumeList,
+} from '../atom/atom';
 import Select from '../components/Select';
-import { fetchTreinosNameByDia, Treino } from '../utils/fetchTreinosByDia';
+import {
+  fetchTreinosByDia,
+  fetchTreinosNameByDia,
+  Treino,
+} from '../utils/fetchTreinosByDia';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { fetchDiasData } from '../utils/fetchDias';
 import {
@@ -17,29 +27,43 @@ import { fetchVolumeByTreino, Volume } from '../utils/fetchVolumeByTreino';
 import { averageVol } from '../utils/averageVol';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import { filteredTreinos, filteredVolume } from '../atom/selectors';
 
 export default function Charts() {
   const setDiasSelect = useSetRecoilState(diasSelectState);
   const selectRecoilValue = useRecoilValue(diasSelectState);
   const [diasData, setDiasData] = useState<Dias[]>([]);
-  const [treinoSelectState, setTreinoSelectState] = useState<Treino[]>([]);
-  const [treinoSelect, setTreinoSelect] = useState<string>('');
-  const [volumeData, setVolumeData] = useState<Volume[]>([]);
 
-  const selectedTreinoId = treinoSelectState.find(
-    (treino) => treino.name === treinoSelect
-  );
+  const setTreinoSelect = useSetRecoilState(treinosSelectState);
+
+  const treinoSelect = useRecoilValue(treinosSelectState);
+
+  const treinosLista = useRecoilValue(filteredTreinos);
+
+  const setTreinos = useSetRecoilState(treinosList);
+  const userIdValue = useRecoilValue(userId);
+
+  const setVolumeList = useSetRecoilState(volumeList);
+
+  const volumeLista = useRecoilValue(volumeList);
+
+  const volumesData = useRecoilValue(filteredVolume);
+
+  console.log(volumesData);
 
   useEffect(() => {
-    const userId = localStorage.getItem('token');
     fetchDiasData(setDiasData);
-    if (selectRecoilValue.length > 0 && userId != null) {
-      fetchTreinosNameByDia(setTreinoSelectState, selectRecoilValue, userId);
+  }, []);
+
+  useEffect(() => {
+    if (userIdValue) {
+      fetchTreinosByDia(setTreinos, userIdValue);
     }
-    if (treinoSelect.length > 0) {
-      fetchVolumeByTreino(setVolumeData, selectedTreinoId!.id!);
-    }
-  }, [selectRecoilValue, selectedTreinoId, treinoSelect]);
+  }, [setTreinos, userIdValue]);
+
+  useEffect(() => {
+    fetchVolumeByTreino(setVolumeList);
+  }, []);
   return (
     <>
       <Header />
@@ -56,7 +80,7 @@ export default function Charts() {
             selectedValue={selectRecoilValue}
           />
           <Select
-            selectData={treinoSelectState}
+            selectData={treinosLista}
             defaultOptionValue='Treino'
             value={treinoSelect}
             onValueChange={setTreinoSelect}
@@ -68,7 +92,7 @@ export default function Charts() {
             <AreaChart
               width={900}
               height={200}
-              data={volumeData}
+              data={volumesData}
               margin={{
                 top: 24,
                 right: 24,
@@ -96,7 +120,7 @@ export default function Charts() {
               Média
             </label>
             <div className='bg-orange-500 text-gray-900 rounded w-full h-full px-4 py-3 text-center font-semibold'>
-              <p>{averageVol(volumeData)}</p>
+              <p>{averageVol(volumesData)}</p>
             </div>
           </div>
         </section>

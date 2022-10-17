@@ -1,40 +1,35 @@
-import React, { ChangeEvent, useEffect, useState } from 'react';
-import { diasSelectState } from '../atom/atom';
+import React, { useEffect, useState } from 'react';
+import { diasSelectState, treinosList } from '../atom/atom';
 import { Dias } from '../pages';
 import Select from './Select';
 import { useSetRecoilState, useRecoilValue } from 'recoil';
 import { fetchTreinosByDia, Treino } from '../utils/fetchTreinosByDia';
 import { fetchDiasData } from '../utils/fetchDias';
-import { supabase } from '../supa';
-import useGetUserInfo from '../utils/useGetUserInfo';
 import { userId } from '../atom/atom';
+import { filteredTreinos } from '../atom/selectors';
+import { setTodaysDate } from '../utils/setTodaysDate';
 
 interface Props {
   diasData: Dias[];
 }
 
-interface User {
-  id: string;
-  email: string;
-  aud: string;
-  role: string;
-}
-
 export default function Table() {
   const setDiasSelect = useSetRecoilState(diasSelectState);
   const selectRecoilValue = useRecoilValue(diasSelectState);
-  const [tableTreinos, setTableTreinos] = useState<Treino[]>([]);
   const [diasData, setDiasData] = useState<Dias[]>([]);
   const userIdValue = useRecoilValue(userId);
+  const setTreinos = useSetRecoilState(treinosList);
+  const treinosLista = useRecoilValue(filteredTreinos);
 
   useEffect(() => {
     fetchDiasData(setDiasData);
+    setTodaysDate(setDiasSelect);
   }, []);
   useEffect(() => {
     if (userIdValue) {
-      fetchTreinosByDia(setTableTreinos, selectRecoilValue, userIdValue);
+      fetchTreinosByDia(setTreinos, userIdValue);
     }
-  }, [selectRecoilValue, userIdValue]);
+  }, [setTreinos, userIdValue]);
   return (
     <>
       <div className='self-center'>
@@ -55,8 +50,8 @@ export default function Table() {
           </tr>
         </thead>
         <tbody className='text-center bg-gray-700 text-xs'>
-          {tableTreinos &&
-            tableTreinos.map((treino: Treino) => (
+          {treinosLista &&
+            treinosLista.map((treino: Treino) => (
               <tr key={treino.id}>
                 <td className='border-r border-gray-300 border-t py-3'>
                   {treino.name}

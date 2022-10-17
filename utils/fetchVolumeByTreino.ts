@@ -6,16 +6,15 @@ export interface Volume {
   id?: string;
   vol: number;
   dia: string;
+  treinoId: string;
 }
 
 export async function fetchVolumeByTreino(
-  setter: Dispatch<SetStateAction<Volume[]>>,
-  treinoId: string
+  setter: Dispatch<SetStateAction<Volume[]>>
 ) {
   const { data, error } = await supabase
     .from('Volumes')
-    .select('vol, dia, id')
-    .eq('treinoId', treinoId);
+    .select('vol, dia, id, treinoId');
 
   if (error) {
     console.log(error);

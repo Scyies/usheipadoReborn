@@ -9,6 +9,7 @@ export interface Treino {
   sets?: number;
   diasId?: string;
   created_at?: string | Date;
+  user_id?: string;
 }
 
 interface TreinoDataProps {
@@ -18,13 +19,11 @@ interface TreinoDataProps {
 
 export async function fetchTreinosByDia(
   setter: Dispatch<SetStateAction<Treino[]>>,
-  diasId: string,
   userId: string
 ) {
   const { data, error } = await supabase
     .from('Treinos')
-    .select('name, sets, reps, id, created_at')
-    .eq('diasId', diasId)
+    .select('name, sets, reps, id, created_at, diasId')
     .eq('user_id', userId);
 
   if (error) {

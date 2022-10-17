@@ -1,5 +1,7 @@
 import { atom } from 'recoil';
 import { v4 } from 'uuid';
+import { Treino } from '../utils/fetchTreinosByDia';
+import { Volume } from '../utils/fetchVolumeByTreino';
 
 export interface IToken {
   session: {
@@ -17,7 +19,17 @@ export interface IToken {
   };
 }
 
+export interface TreinoSelect {
+  name: string;
+  id: string;
+}
+
 export const diasSelectState = atom<string>({
+  key: v4(),
+  default: '',
+});
+
+export const treinosSelectState = atom<string>({
   key: v4(),
   default: '',
 });
@@ -25,4 +37,14 @@ export const diasSelectState = atom<string>({
 export const userId = atom<string>({
   key: v4(),
   default: '',
+});
+
+export const treinosList = atom<Treino[]>({
+  key: v4(),
+  default: [],
+});
+
+export const volumeList = atom<Volume[]>({
+  key: v4(),
+  default: [],
 });

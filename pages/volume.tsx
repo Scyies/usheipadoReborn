@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { Dias } from '.';
-import { diasSelectState, userId } from '../atom/atom';
+import { diasSelectState, treinosList, userId } from '../atom/atom';
 import Select from '../components/Select';
 import { fetchDiasData } from '../utils/fetchDias';
 import { fetchTreinosByDia, Treino } from '../utils/fetchTreinosByDia';
@@ -11,6 +11,7 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { TreinoCard } from '../components/TreinoCard';
 import { NewVolumeCard } from '../components/NewVolumeCard';
+import { filteredTreinos } from '../atom/selectors';
 
 export interface VolumeInput {
   name?: string;
@@ -31,7 +32,11 @@ export default function Volume() {
 
   const userIdValue = useRecoilValue(userId);
 
-  const [treinosList, setTreinosList] = useState<Treino[]>([]);
+  // const [treinosList, setTreinosList] = useState<Treino[]>([]);
+
+  const setTreinos = useSetRecoilState(treinosList);
+
+  const treinosLista = useRecoilValue(filteredTreinos);
 
   const [inputFields, setInputFields] = useState<VolumeInput>({
     name: '',
@@ -52,7 +57,7 @@ export default function Volume() {
   }
 
   function addEditBoxFields(id: string) {
-    const selectedTreino = treinosList.find((treino) => id === treino.id);
+    const selectedTreino = treinosLista.find((treino) => id === treino.id);
     setInputFields((prev) => ({
       ...prev,
       name: selectedTreino?.name,
@@ -101,10 +106,12 @@ export default function Volume() {
     fetchDiasData(setDiasData);
     const userStorage = localStorage.getItem('token');
     userStorage && setLoggedUser(userStorage!);
-  }, [selectRecoilValue]);
+  }, []);
   useEffect(() => {
-    fetchTreinosByDia(setTreinosList, selectRecoilValue, userIdValue);
-  }, [selectRecoilValue, userIdValue]);
+    if (userIdValue) {
+      fetchTreinosByDia(setTreinos, userIdValue);
+    }
+  }, [setTreinos, userIdValue]);
   return (
     <>
       <Header />
@@ -129,7 +136,7 @@ export default function Volume() {
           className='my-8 flex flex-col gap-4 items-center w-full'
         >
           {selectRecoilValue.length > 0 &&
-            treinosList.map((treino, index) => (
+            treinosLista.map((treino) => (
               <div
                 key={treino.id}
                 className='max-w-[300px] md:max-w-md lg:max-w-lg w-full overflow-hidden'

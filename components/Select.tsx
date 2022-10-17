@@ -32,7 +32,7 @@ export default function Select({
           {selectData &&
             selectData.map((dia: Dias | Treino) => (
               <RadixSelect.Item
-                value={dia.name!}
+                value={dia.id!}
                 key={dia.id}
                 textValue={dia?.name}
                 className='flex items-center justify-center gap-2 outline-none hover:bg-gray-300 px-4 py-3 text-center'

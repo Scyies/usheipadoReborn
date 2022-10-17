@@ -1,9 +1,10 @@
-import { Volume } from "./fetchVolumeByTreino";
+import { Volume } from './fetchVolumeByTreino';
 
 interface VolumeTest {
   id?: string;
   vol: number;
   dia: Date;
+  treinoId: string;
 }
 
 export function formatDate(volumeData: VolumeTest[]) {
@@ -12,15 +13,20 @@ export function formatDate(volumeData: VolumeTest[]) {
     const date = new Date(item.dia);
     const vol: number = item.vol;
 
-    const dia = date.toLocaleDateString("pt-BR");
+    const dia = date.toLocaleDateString('pt-BR');
 
     const pegaAno = dia.match(/(\d{4})/);
 
     const ano = pegaAno![0];
 
-    const dateSemAno = dia.replace(`/${ano}`, "");
+    const dateSemAno = dia.replace(`/${ano}`, '');
 
-    dataArr.push({ dia: dateSemAno, vol, id: item.id });
+    dataArr.push({
+      dia: dateSemAno,
+      vol,
+      id: item.id,
+      treinoId: item.treinoId,
+    });
   });
   return dataArr;
 }
@@ -30,10 +36,15 @@ export function sortArrayByDia(volumeData: Volume[]) {
   volumeData.map((item) => {
     const date = new Date(item.dia);
 
-    sortedArr.push({ dia: date, vol: item.vol, id: item.id });
+    sortedArr.push({
+      dia: date,
+      vol: item.vol,
+      id: item.id,
+      treinoId: item.treinoId,
+    });
   });
   const volumeSorteado = sortedArr.sort(
     (objA, objB) => Number(objA.dia) - Number(objB.dia)
   );
-  return volumeSorteado
+  return volumeSorteado;
 }
