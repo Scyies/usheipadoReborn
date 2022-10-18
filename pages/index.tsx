@@ -226,7 +226,9 @@ const Home: NextPage = () => {
                     placeholder='*********'
                   />
                 </div>
-                <Button type='submit'>Cadastrar</Button>
+                <Button type='submit' loading={isLoading}>
+                  {!isLoading ? 'Cadastrar' : <Loading />}
+                </Button>
               </form>
             )}
             {formType === 'login' && (

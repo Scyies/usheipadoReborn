@@ -1,9 +1,9 @@
+import classNames from 'classnames';
 import { PencilSimpleLine, TrashSimple } from 'phosphor-react';
 import { Dispatch } from 'react';
 import { Treino } from '../utils/fetchTreinosByDia';
 import Button from './Button';
 import { Input } from './Input';
-import { Loading } from './Loading';
 
 interface EditCardProps {
   setValue: (event: React.ChangeEvent<HTMLInputElement>) => void;
@@ -11,6 +11,7 @@ interface EditCardProps {
   id: string;
   mutationType: Dispatch<React.SetStateAction<'' | 'edit' | 'delete'>>;
   loading: boolean;
+  deleted?: { id: string; value: boolean };
 }
 
 export function EditCard({
@@ -19,9 +20,17 @@ export function EditCard({
   id,
   mutationType,
   loading,
+  deleted,
 }: EditCardProps) {
   return (
-    <div className='bg-transparent border-gray-300 border-r border-l border-b rounded flex flex-col gap-4 p-4 mt-1 animate-slideIn z-0'>
+    <div
+      className={classNames(
+        'bg-transparent border-gray-300 border-r border-l border-b rounded flex flex-col gap-4 p-4 mt-1 animate-slideIn z-0',
+        {
+          hidden: deleted?.id === id && deleted.value === true,
+        }
+      )}
+    >
       <div className='grid grid-cols-3 items-center gap-2'>
         <label htmlFor='treino' className='text-gray-300 text-xs text-end'>
           Treino:

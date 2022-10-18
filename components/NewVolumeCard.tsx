@@ -1,12 +1,14 @@
 import Button from './Button';
 import { Input } from './Input';
+import { Loading } from './Loading';
 
 interface NewVolumeCardProps {
   setValue: (event: React.ChangeEvent<HTMLInputElement>) => void;
   id: string;
+  loading: boolean;
 }
 
-export function NewVolumeCard({ setValue, id }: NewVolumeCardProps) {
+export function NewVolumeCard({ setValue, id, loading }: NewVolumeCardProps) {
   return (
     <div className='bg-transparent border-gray-300 border-r border-l border-b rounded flex flex-col gap-4 p-4 mt-1 animate-slideIn z-0'>
       <div className='grid grid-cols-3 items-center gap-2'>
@@ -63,7 +65,7 @@ export function NewVolumeCard({ setValue, id }: NewVolumeCardProps) {
         </div>
       </div>
       <div className='self-center'>
-        <Button>Adicionar</Button>
+        <Button>{!loading ? 'Adicionar' : <Loading />}</Button>
       </div>
     </div>
   );

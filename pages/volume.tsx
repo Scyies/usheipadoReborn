@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { Dias } from '.';
 import { diasSelectState, treinosList, userId } from '../atom/atom';
 import Select from '../components/Select';
@@ -23,20 +23,18 @@ export interface VolumeInput {
 }
 
 export default function Volume() {
-  const setDiasSelect = useSetRecoilState(diasSelectState);
-  const selectRecoilValue = useRecoilValue(diasSelectState);
+  const [selectRecoilValue, setSelectRecoilValue] =
+    useRecoilState(diasSelectState);
 
   const [diasData, setDiasData] = useState<Dias[]>([]);
 
-  const setLoggedUser = useSetRecoilState(userId);
-
-  const userIdValue = useRecoilValue(userId);
-
-  // const [treinosList, setTreinosList] = useState<Treino[]>([]);
+  const [userIdValue, setUserIdValue] = useRecoilState(userId);
 
   const setTreinos = useSetRecoilState(treinosList);
 
   const treinosLista = useRecoilValue(filteredTreinos);
+
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const [inputFields, setInputFields] = useState<VolumeInput>({
     name: '',
@@ -76,6 +74,7 @@ export default function Volume() {
 
   async function addNewVolume(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    setIsLoading(true);
 
     const totalVolume =
       Number(inputFields.peso) *
@@ -94,10 +93,12 @@ export default function Volume() {
       .select('*');
 
     if (data) {
+      setIsLoading(false);
       toast.success('Volume adicionado com sucesso!');
     }
     if (error) {
-      console.log(error);
+      console.error(error);
+      setIsLoading(false);
       toast.error(error.message);
     }
   }
@@ -105,7 +106,7 @@ export default function Volume() {
   useEffect(() => {
     fetchDiasData(setDiasData);
     const userStorage = localStorage.getItem('token');
-    userStorage && setLoggedUser(userStorage!);
+    userStorage && setUserIdValue(userStorage!);
   }, []);
   useEffect(() => {
     if (userIdValue) {
@@ -124,7 +125,7 @@ export default function Volume() {
             selectData={diasData}
             defaultOptionValue='D. Semana'
             value={selectRecoilValue}
-            onValueChange={setDiasSelect}
+            onValueChange={setSelectRecoilValue}
             selectedValue={selectRecoilValue}
           />
         </div>
@@ -151,6 +152,7 @@ export default function Volume() {
                   <NewVolumeCard
                     id={inputFields.id!}
                     setValue={handleFormInput}
+                    loading={isLoading}
                   />
                 )}
               </div>

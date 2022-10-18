@@ -11,7 +11,6 @@ import Footer from '../components/Footer';
 import Header from '../components/Header';
 import { EditCard } from '../components/EditCard';
 import { TreinoCard } from '../components/TreinoCard';
-import { removeFromArrayById } from '../utils/arraySpliceById';
 import { filteredTreinos } from '../atom/selectors';
 
 export interface TreinoInput {
@@ -28,8 +27,6 @@ export default function EditTreino() {
 
   const selectRecoilValue = useRecoilValue(diasSelectState);
 
-  // const [treinosList, setTreinosList] = useState<Treino[]>([]);
-
   const setTreinos = useSetRecoilState(treinosList);
 
   const treinosLista = useRecoilValue(filteredTreinos);
@@ -37,6 +34,8 @@ export default function EditTreino() {
   const userIdValue = useRecoilValue(userId);
 
   const [isLoading, setIsLoading] = useState(false);
+
+  const [deleted, setDeleted] = useState({ id: '', value: false });
 
   const [inputFields, setInputFields] = useState<TreinoInput>({
     name: '',
@@ -105,17 +104,23 @@ export default function EditTreino() {
     }
 
     if (type === 'delete') {
+      const { error: volError } = await supabase
+        .from('Volumes')
+        .delete()
+        .eq('treinoId', inputFields.id);
       const { error } = await supabase
         .from('Treinos')
         .delete()
         .eq('id', inputFields.id);
-      if (error) {
+      if (error || volError) {
         console.error(error);
+        console.error(volError);
         setIsLoading(false);
         return toast.error('Não foi possível excluir o treino');
       }
       setIsLoading(false);
-      removeFromArrayById(treinosLista, inputFields.id);
+      setDeleted({ id: inputFields.id, value: true });
+      setToggleEdit(null);
       toast.success('Treino excluído com sucesso!');
     }
   }
@@ -166,6 +171,7 @@ export default function EditTreino() {
                   edittor={toggleEditor}
                   id={treino.id!}
                   treino={treino?.name!}
+                  deleted={deleted}
                 />
                 {toggleEdit == treino.id && (
                   <EditCard
@@ -174,6 +180,7 @@ export default function EditTreino() {
                     setValue={handleFormInput}
                     mutationType={setChangeType}
                     loading={isLoading}
+                    deleted={deleted}
                   />
                 )}
               </div>
