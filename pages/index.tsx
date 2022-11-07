@@ -12,6 +12,7 @@ import Logo from '../assets/logo.svg';
 import { Input } from '../components/Input';
 import { EnvelopeSimple, IdentificationBadge, LockKey } from 'phosphor-react';
 import { Loading } from '../components/Loading';
+import { useGetUser } from '../hooks/useGetUser';
 
 export type Dias = {
   id: string;
@@ -23,6 +24,8 @@ const Home: NextPage = () => {
   const [formType, setFormType] = useState<'login' | 'sigin'>('login');
   const setLoggedUser = useSetRecoilState(user);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const { userInfo } = useGetUser();
 
   const router = useRouter();
 
@@ -91,8 +94,9 @@ const Home: NextPage = () => {
   }
 
   useEffect(() => {
-    const user = localStorage.getItem('token');
-    user?.length! > 0 && router.push('/home');
+    if (userInfo !== null) {
+      router.push('/home');
+    }
   }, []);
 
   return (
