@@ -13,6 +13,7 @@ import { TreinoCard } from '../components/TreinoCard';
 import { NewVolumeCard } from '../components/NewVolumeCard';
 import { filteredTreinos } from '../atom/selectors';
 import { useGetUser } from '../hooks/useGetUser';
+import { useRouter } from 'next/router';
 
 export interface VolumeInput {
   name?: string;
@@ -37,6 +38,8 @@ export default function Volume() {
   const treinosLista = useRecoilValue(filteredTreinos);
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const router = useRouter();
 
   const [inputFields, setInputFields] = useState<VolumeInput>({
     name: '',
@@ -108,9 +111,6 @@ export default function Volume() {
     }
   }
 
-  useEffect(() => {
-    fetchDiasData(setDiasData);
-  }, []);
   useEffect(() => {
     if (userIdValue) {
       fetchTreinosByDia(setTreinos, userIdValue);

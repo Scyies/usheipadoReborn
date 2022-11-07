@@ -93,12 +93,6 @@ const Home: NextPage = () => {
     }
   }
 
-  useEffect(() => {
-    if (userInfo !== null) {
-      router.push('/home');
-    }
-  }, []);
-
   return (
     <div>
       <Head>

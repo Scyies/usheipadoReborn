@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { Dias } from '.';
 import { diasSelectState, treinosList } from '../atom/atom';
@@ -13,6 +13,7 @@ import { EditCard } from '../components/EditCard';
 import { TreinoCard } from '../components/TreinoCard';
 import { filteredTreinos } from '../atom/selectors';
 import { useGetUser } from '../hooks/useGetUser';
+import { useRouter } from 'next/router';
 
 export interface TreinoInput {
   id: string;
@@ -46,6 +47,8 @@ export default function EditTreino() {
     sets: '',
     id: '',
   });
+
+  const router = useRouter();
 
   const [toggleEdit, setToggleEdit] = useState<string | null>(null);
 

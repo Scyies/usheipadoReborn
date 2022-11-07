@@ -24,6 +24,7 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { filteredTreinos, filteredVolume } from '../atom/selectors';
 import { useGetUser } from '../hooks/useGetUser';
+import { useRouter } from 'next/router';
 
 export default function Charts() {
   const setDiasSelect = useSetRecoilState(diasSelectState);
@@ -45,6 +46,8 @@ export default function Charts() {
 
   const volumesData = useRecoilValue(filteredVolume);
 
+  const router = useRouter();
+
   useEffect(() => {
     fetchDiasData(setDiasData);
   }, []);
@@ -58,6 +61,7 @@ export default function Charts() {
   useEffect(() => {
     fetchVolumeByTreino(setVolumeList);
   }, []);
+
   return (
     <>
       <Header />

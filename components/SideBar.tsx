@@ -84,10 +84,14 @@ export default function SideBar({ status }: SideProps) {
           <PencilSimpleLine size={22} />
           Editar
         </Link>
-        {userInfo && (
+        {userInfo ? (
           <Button onClick={() => logOut()}>
             <SignOut size={22} />
             Sair
+          </Button>
+        ) : (
+          <Button>
+            <Link href='/'>LogIn</Link>
           </Button>
         )}
       </section>
