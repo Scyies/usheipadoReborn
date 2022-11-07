@@ -5,7 +5,7 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { useSetRecoilState } from 'recoil';
-import { userId } from '../atom/atom';
+import { user } from '../atom/atom';
 import Button from '../components/Button';
 import { supabase } from '../supa';
 import Logo from '../assets/logo.svg';
@@ -21,7 +21,7 @@ export type Dias = {
 
 const Home: NextPage = () => {
   const [formType, setFormType] = useState<'login' | 'sigin'>('login');
-  const setLoggedUser = useSetRecoilState(userId);
+  const setLoggedUser = useSetRecoilState(user);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const router = useRouter();
@@ -59,8 +59,7 @@ const Home: NextPage = () => {
       }
 
       if (data) {
-        localStorage.setItem('token', data['session']?.user.id!);
-        setLoggedUser(data['session']?.user.id!);
+        setLoggedUser(data['session']);
 
         toast.success('Usuário criado com sucesso!');
         setIsLoading(false);
@@ -83,8 +82,7 @@ const Home: NextPage = () => {
       }
 
       if (data) {
-        localStorage.setItem('token', data['session']?.user.id!);
-        setLoggedUser(data['session']?.user.id!);
+        setLoggedUser(data['session']);
         toast.success('Login realizado com sucesso!');
         setIsLoading(false);
         return router.push('/home');

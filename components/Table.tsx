@@ -5,31 +5,29 @@ import Select from './Select';
 import { useSetRecoilState, useRecoilValue } from 'recoil';
 import { fetchTreinosByDia, Treino } from '../utils/fetchTreinosByDia';
 import { fetchDiasData } from '../utils/fetchDias';
-import { userId } from '../atom/atom';
 import { filteredTreinos } from '../atom/selectors';
 import { setTodaysDate } from '../utils/setTodaysDate';
-
-interface Props {
-  diasData: Dias[];
-}
+import { useGetUser } from '../hooks/useGetUser';
 
 export default function Table() {
   const setDiasSelect = useSetRecoilState(diasSelectState);
   const selectRecoilValue = useRecoilValue(diasSelectState);
   const [diasData, setDiasData] = useState<Dias[]>([]);
-  const userIdValue = useRecoilValue(userId);
   const setTreinos = useSetRecoilState(treinosList);
   const treinosLista = useRecoilValue(filteredTreinos);
+  const { userInfo } = useGetUser();
+
+  const currentUserId = userInfo?.user.id;
 
   useEffect(() => {
     fetchDiasData(setDiasData);
     setTodaysDate(setDiasSelect);
   }, []);
   useEffect(() => {
-    if (userIdValue) {
-      fetchTreinosByDia(setTreinos, userIdValue);
+    if (currentUserId) {
+      fetchTreinosByDia(setTreinos, currentUserId);
     }
-  }, [setTreinos, userIdValue]);
+  }, [setTreinos, currentUserId]);
   return (
     <>
       <div className='self-center'>

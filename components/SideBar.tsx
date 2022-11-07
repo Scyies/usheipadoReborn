@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import React, { useEffect } from 'react';
+import React from 'react';
 import classNames from 'classnames';
 import {
   House,
@@ -11,20 +11,17 @@ import {
 } from 'phosphor-react';
 import Button from './Button';
 import { supabase } from '../supa';
-import { handleAuth } from '@supabase/auth-helpers-nextjs';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
-import { userId } from '../atom/atom';
+import { useRecoilValue } from 'recoil';
+import { user } from '../atom/atom';
 import { useRouter } from 'next/router';
 import { toast } from 'react-toastify';
 
 interface SideProps {
   status: 'open' | 'closed';
-  // onBlur: () => void
 }
 
 export default function SideBar({ status }: SideProps) {
-  const userInfo = useRecoilValue(userId);
-  const setLoggedUser = useSetRecoilState(userId);
+  const userInfo = useRecoilValue(user);
   const router = useRouter();
   async function signOut() {
     const { error } = await supabase.auth.signOut();
@@ -32,21 +29,14 @@ export default function SideBar({ status }: SideProps) {
       console.error(error);
       return;
     }
-    localStorage.removeItem('token');
-    setLoggedUser('');
     toast.success('Usuário desconectado com sucesso!');
     router.push('/');
   }
 
   function logOut() {
-    localStorage.removeItem('token');
     signOut();
   }
 
-  useEffect(() => {
-    const userStorage = localStorage.getItem('token');
-    userStorage && setLoggedUser(userStorage!);
-  }, []);
   return (
     <aside
       className={classNames(
@@ -58,38 +48,41 @@ export default function SideBar({ status }: SideProps) {
       )}
     >
       <section className='flex flex-col justify-center text-center gap-4'>
-        <Link href='/home'>
-          <a className='flex items-center justify-center gap-2 bg-orange-500 text-gray-900 rounded px-4 py-3 font-medium hover:bg-orange-300 transition-colors'>
-            <House size={22} />
-            Home
-          </a>
+        <Link
+          href='/home'
+          className='flex items-center justify-center gap-2 bg-orange-500 text-gray-900 rounded px-4 py-3 font-medium hover:bg-orange-300 transition-colors'
+        >
+          <House size={22} />
+          Home
         </Link>
-        <Link href='https://www.calculator.net/body-fat-calculator.html'>
-          <a
-            target='_blank'
-            className='flex items-center justify-center gap-2 bg-orange-500 text-gray-900 rounded px-4 py-3 font-medium hover:bg-orange-300 transition-colors'
-          >
-            <Calculator size={22} />
-            BF Calc
-          </a>
+        <Link
+          href='https://www.calculator.net/body-fat-calculator.html'
+          target='_blank'
+          className='flex items-center justify-center gap-2 bg-orange-500 text-gray-900 rounded px-4 py-3 font-medium hover:bg-orange-300 transition-colors'
+        >
+          <Calculator size={22} />
+          BF Calc
         </Link>
-        <Link href='/volume'>
-          <a className='flex items-center justify-center gap-2 bg-orange-500 text-gray-900 rounded px-4 py-3 font-medium hover:bg-orange-300 transition-colors'>
-            <Barbell size={22} />
-            Volumes
-          </a>
+        <Link
+          href='/volume'
+          className='flex items-center justify-center gap-2 bg-orange-500 text-gray-900 rounded px-4 py-3 font-medium hover:bg-orange-300 transition-colors'
+        >
+          <Barbell size={22} />
+          Volumes
         </Link>
-        <Link href='/graficos'>
-          <a className='flex items-center justify-center gap-2 bg-orange-500 text-gray-900 rounded px-4 py-3 font-medium hover:bg-orange-300 transition-colors'>
-            <ChartLine size={22} />
-            Gráficos
-          </a>
+        <Link
+          href='/graficos'
+          className='flex items-center justify-center gap-2 bg-orange-500 text-gray-900 rounded px-4 py-3 font-medium hover:bg-orange-300 transition-colors'
+        >
+          <ChartLine size={22} />
+          Gráficos
         </Link>
-        <Link href='/edit-treino'>
-          <a className='flex items-center justify-center gap-2 bg-orange-500 text-gray-900 rounded px-4 py-3 font-medium hover:bg-orange-300 transition-colors'>
-            <PencilSimpleLine size={22} />
-            Editar
-          </a>
+        <Link
+          href='/edit-treino'
+          className='flex items-center justify-center gap-2 bg-orange-500 text-gray-900 rounded px-4 py-3 font-medium hover:bg-orange-300 transition-colors'
+        >
+          <PencilSimpleLine size={22} />
+          Editar
         </Link>
         {userInfo && (
           <Button onClick={() => logOut()}>

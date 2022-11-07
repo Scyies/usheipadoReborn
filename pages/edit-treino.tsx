@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { Dias } from '.';
-import { diasSelectState, userId, treinosList } from '../atom/atom';
+import { diasSelectState, treinosList } from '../atom/atom';
 import Select from '../components/Select';
 import { fetchDiasData } from '../utils/fetchDias';
 import { fetchTreinosByDia, Treino } from '../utils/fetchTreinosByDia';
@@ -12,6 +12,7 @@ import Header from '../components/Header';
 import { EditCard } from '../components/EditCard';
 import { TreinoCard } from '../components/TreinoCard';
 import { filteredTreinos } from '../atom/selectors';
+import { useGetUser } from '../hooks/useGetUser';
 
 export interface TreinoInput {
   id: string;
@@ -31,7 +32,9 @@ export default function EditTreino() {
 
   const treinosLista = useRecoilValue(filteredTreinos);
 
-  const userIdValue = useRecoilValue(userId);
+  const { userInfo } = useGetUser();
+
+  const userIdValue = userInfo?.user.id;
 
   const [isLoading, setIsLoading] = useState(false);
 

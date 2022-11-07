@@ -2,16 +2,17 @@ import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { Dias } from '.';
-import { diasSelectState, treinosList, userId } from '../atom/atom';
+import { diasSelectState, treinosList } from '../atom/atom';
 import Select from '../components/Select';
 import { fetchDiasData } from '../utils/fetchDias';
-import { fetchTreinosByDia, Treino } from '../utils/fetchTreinosByDia';
+import { fetchTreinosByDia } from '../utils/fetchTreinosByDia';
 import { supabase } from '../supa';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { TreinoCard } from '../components/TreinoCard';
 import { NewVolumeCard } from '../components/NewVolumeCard';
 import { filteredTreinos } from '../atom/selectors';
+import { useGetUser } from '../hooks/useGetUser';
 
 export interface VolumeInput {
   name?: string;
@@ -28,7 +29,8 @@ export default function Volume() {
 
   const [diasData, setDiasData] = useState<Dias[]>([]);
 
-  const [userIdValue, setUserIdValue] = useRecoilState(userId);
+  const { userInfo } = useGetUser();
+  const userIdValue = userInfo?.user.id;
 
   const setTreinos = useSetRecoilState(treinosList);
 
@@ -88,6 +90,9 @@ export default function Volume() {
           vol: Math.round(totalVolume),
           dia: inputFields.dia,
           treinoId: inputFields.id,
+          peso: inputFields.peso,
+          reps: inputFields.reps,
+          sets: inputFields.sets,
         },
       ])
       .select('*');
@@ -105,8 +110,6 @@ export default function Volume() {
 
   useEffect(() => {
     fetchDiasData(setDiasData);
-    const userStorage = localStorage.getItem('token');
-    userStorage && setUserIdValue(userStorage!);
   }, []);
   useEffect(() => {
     if (userIdValue) {

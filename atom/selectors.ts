@@ -7,6 +7,7 @@ import {
   diasSelectState,
   treinosList,
   treinosSelectState,
+  user,
   volumeList,
 } from './atom';
 
@@ -33,27 +34,24 @@ export const filteredVolume = selector({
   get: ({ get }) => {
     const filter = get(treinosSelectState);
     const allVolumes = get(volumeList);
-    console.log(allVolumes);
     const volumesById = allVolumes.filter((vol) => {
       if (!filter) return true;
-      console.log(filter);
       const filteredById = vol.treinoId === filter;
       return filteredById;
     });
-    console.log(volumesById);
     return volumesById;
   },
 });
 
 export const treinosAsync = selector({
   key: v4(),
-  get: async () => {
-    const userId = localStorage.getItem('token');
+  get: async ({ get }) => {
+    const userId = get(user);
 
     const { data, error } = await supabase
       .from('Treinos')
       .select('name, sets, reps, id, created_at, diasId')
-      .eq('user_id', userId);
+      .eq('user_id', userId?.user.id);
 
     if (error) {
       return console.error(error);

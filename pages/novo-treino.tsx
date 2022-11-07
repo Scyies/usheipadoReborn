@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { diasSelectState, userId } from '../atom/atom';
+import { diasSelectState } from '../atom/atom';
 import Select from '../components/Select';
 import { useSetRecoilState, useRecoilValue } from 'recoil';
 import { fetchDiasData } from '../utils/fetchDias';
@@ -11,12 +11,14 @@ import { toast } from 'react-toastify';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { Loading } from '../components/Loading';
+import { useGetUser } from '../hooks/useGetUser';
 
 export default function NovoTreino() {
   const setDiasSelect = useSetRecoilState(diasSelectState);
   const selectRecoilValue = useRecoilValue(diasSelectState);
   const [diasData, setDiasData] = useState<Dias[]>([]);
-  const userIdValue = useRecoilValue(userId);
+  const { userInfo } = useGetUser();
+  const userIdValue = userInfo?.user.id;
   const [newTreinoInputs, setNewTreinoInputs] = useState({
     name: '',
     reps: '',

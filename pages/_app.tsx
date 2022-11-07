@@ -14,7 +14,7 @@ function MyApp({ Component, pageProps }: AppProps) {
       <RecoilRoot>
         <Component {...pageProps} />
         <ToastContainer
-          position='bottom-center'
+          position='bottom-right'
           autoClose={5000}
           hideProgressBar={false}
           newestOnTop={false}

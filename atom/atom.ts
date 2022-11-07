@@ -1,3 +1,4 @@
+import { Session } from '@supabase/supabase-js';
 import { atom } from 'recoil';
 import { v4 } from 'uuid';
 import { Treino } from '../utils/fetchTreinosByDia';
@@ -34,9 +35,9 @@ export const treinosSelectState = atom<string>({
   default: '',
 });
 
-export const userId = atom<string>({
+export const user = atom<Session | null>({
   key: v4(),
-  default: '',
+  default: null,
 });
 
 export const treinosList = atom<Treino[]>({

@@ -1,11 +1,21 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import SideBar from './SideBar';
 import Image from 'next/image';
 import Logo from '../assets/logo.svg';
 import classNames from 'classnames';
+import { supabase } from '../supa';
+import { useSetRecoilState } from 'recoil';
+import { user } from '../atom/atom';
+import { useGetUser } from '../hooks/useGetUser';
 
 export default function Header() {
   const [openState, setOpenState] = useState<'open' | 'closed'>('closed');
+  const { setUserInfo } = useGetUser();
+
+  supabase.auth.onAuthStateChange((event, session) => {
+    setUserInfo(session);
+    console.log(event);
+  });
 
   function openNav() {
     if (openState === 'closed') {
@@ -14,6 +24,13 @@ export default function Header() {
       setOpenState('closed');
     }
   }
+
+  useEffect(() => {
+    const token = localStorage.getItem('sb-ffmfgzhdzqrowugjvpaz-auth-token');
+    if (token) {
+      setUserInfo(JSON.parse(token));
+    }
+  }, []);
 
   return (
     <>

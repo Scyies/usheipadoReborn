@@ -19,10 +19,8 @@ export default function Home() {
         <p className='text-gray-300 text-xs mb-4 select-none'>
           Ainda não cadastrou seu treino?
         </p>
-        <Link href='/novo-treino'>
-          <a className='mb-8'>
-            <Button>Novo treino</Button>
-          </a>
+        <Link href='/novo-treino' className='mb-8'>
+          <Button>Novo treino</Button>
         </Link>
       </main>
       <Footer />

@@ -4,15 +4,10 @@ import {
   diasSelectState,
   treinosList,
   treinosSelectState,
-  userId,
   volumeList,
 } from '../atom/atom';
 import Select from '../components/Select';
-import {
-  fetchTreinosByDia,
-  fetchTreinosNameByDia,
-  Treino,
-} from '../utils/fetchTreinosByDia';
+import { fetchTreinosByDia } from '../utils/fetchTreinosByDia';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { fetchDiasData } from '../utils/fetchDias';
 import {
@@ -23,11 +18,12 @@ import {
   Area,
   ResponsiveContainer,
 } from 'recharts';
-import { fetchVolumeByTreino, Volume } from '../utils/fetchVolumeByTreino';
+import { fetchVolumeByTreino } from '../utils/fetchVolumeByTreino';
 import { averageVol } from '../utils/averageVol';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { filteredTreinos, filteredVolume } from '../atom/selectors';
+import { useGetUser } from '../hooks/useGetUser';
 
 export default function Charts() {
   const setDiasSelect = useSetRecoilState(diasSelectState);
@@ -41,15 +37,13 @@ export default function Charts() {
   const treinosLista = useRecoilValue(filteredTreinos);
 
   const setTreinos = useSetRecoilState(treinosList);
-  const userIdValue = useRecoilValue(userId);
+
+  const { userInfo } = useGetUser();
+  const userIdValue = userInfo?.user.id;
 
   const setVolumeList = useSetRecoilState(volumeList);
 
-  const volumeLista = useRecoilValue(volumeList);
-
   const volumesData = useRecoilValue(filteredVolume);
-
-  console.log(volumesData);
 
   useEffect(() => {
     fetchDiasData(setDiasData);
@@ -117,7 +111,7 @@ export default function Charts() {
               htmlFor=''
               className='text-white-200 font-semibold text-center select-none'
             >
-              Média
+              Média de volume
             </label>
             <div className='bg-orange-500 text-gray-900 rounded w-full h-full px-4 py-3 text-center font-semibold'>
               <p>{averageVol(volumesData)}</p>
