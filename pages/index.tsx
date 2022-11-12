@@ -12,7 +12,9 @@ import Logo from '../assets/logo.svg';
 import { Input } from '../components/Input';
 import { EnvelopeSimple, IdentificationBadge, LockKey } from 'phosphor-react';
 import { Loading } from '../components/Loading';
+import googleLogo from '../public/googleIcon.png';
 import { useGetUser } from '../hooks/useGetUser';
+import classNames from 'classnames';
 
 export type Dias = {
   id: string;
@@ -25,7 +27,7 @@ const Home: NextPage = () => {
   const setLoggedUser = useSetRecoilState(user);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const { userInfo } = useGetUser();
+  const { setUserInfo } = useGetUser();
 
   const router = useRouter();
 
@@ -93,6 +95,26 @@ const Home: NextPage = () => {
     }
   }
 
+  async function signInWithGoogle() {
+    setIsLoading(true);
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+    });
+    if (error) return console.error(error);
+    if (data) {
+      setIsLoading(false);
+      return router.push('/home');
+    }
+  }
+
+  useEffect(() => {
+    const token = localStorage.getItem('sb-ffmfgzhdzqrowugjvpaz-auth-token');
+    if (token) {
+      setUserInfo(JSON.parse(token));
+      router.push('/home');
+    }
+  }, []);
+
   return (
     <div>
       <Head>
@@ -135,6 +157,18 @@ const Home: NextPage = () => {
                 ? 'Faça o login e comece a controlar seu treino!'
                 : 'Crie sua conta agora mesmo!'}
             </h1>
+
+            <span
+              className={classNames(
+                'self-center mt-4 cursor-pointer p-1 bg-gray-500 rounded-full hover:bg-gray-700 transition-colors',
+                {
+                  'pointer-events-none': isLoading,
+                }
+              )}
+              onClick={signInWithGoogle}
+            >
+              <Image src={googleLogo} width={32} height={32} alt='' />
+            </span>
 
             {formType === 'login' ? (
               <form
