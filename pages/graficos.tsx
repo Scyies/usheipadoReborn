@@ -46,8 +46,6 @@ export default function Charts() {
 
   const volumesData = useRecoilValue(filteredVolume);
 
-  const router = useRouter();
-
   useEffect(() => {
     fetchDiasData(setDiasData);
   }, []);
@@ -59,8 +57,10 @@ export default function Charts() {
   }, [setTreinos, userIdValue]);
 
   useEffect(() => {
-    fetchVolumeByTreino(setVolumeList);
-  }, []);
+    if (userIdValue) {
+      fetchVolumeByTreino(setVolumeList, userIdValue);
+    }
+  }, [userIdValue]);
 
   return (
     <>

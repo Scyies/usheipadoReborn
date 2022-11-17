@@ -13,6 +13,7 @@ import Footer from '../components/Footer';
 import { Loading } from '../components/Loading';
 import { useGetUser } from '../hooks/useGetUser';
 import { useRouter } from 'next/router';
+import { setTodaysDate } from '../utils/setTodaysDate';
 
 export default function NovoTreino() {
   const setDiasSelect = useSetRecoilState(diasSelectState);
@@ -25,8 +26,6 @@ export default function NovoTreino() {
     reps: '',
     sets: '',
   });
-
-  const router = useRouter();
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -79,6 +78,10 @@ export default function NovoTreino() {
       return;
     }
   }
+
+  useEffect(() => {
+    fetchDiasData(setDiasData);
+  }, []);
 
   return (
     <>

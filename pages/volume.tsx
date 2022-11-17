@@ -96,6 +96,7 @@ export default function Volume() {
           peso: inputFields.peso,
           reps: inputFields.reps,
           sets: inputFields.sets,
+          userId: userIdValue,
         },
       ])
       .select('*');
@@ -111,6 +112,9 @@ export default function Volume() {
     }
   }
 
+  useEffect(() => {
+    fetchDiasData(setDiasData);
+  }, []);
   useEffect(() => {
     if (userIdValue) {
       fetchTreinosByDia(setTreinos, userIdValue);
