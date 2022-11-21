@@ -10,7 +10,13 @@ import Button from '../components/Button';
 import { supabase } from '../supa';
 import Logo from '../assets/logo.svg';
 import { Input } from '../components/Input';
-import { EnvelopeSimple, IdentificationBadge, LockKey } from 'phosphor-react';
+import {
+  EnvelopeSimple,
+  Eye,
+  EyeSlash,
+  IdentificationBadge,
+  LockKey,
+} from 'phosphor-react';
 import { Loading } from '../components/Loading';
 import googleLogo from '../public/googleIcon.png';
 import { useGetUser } from '../hooks/useGetUser';
@@ -26,6 +32,10 @@ const Home: NextPage = () => {
   const [formType, setFormType] = useState<'login' | 'sigin'>('login');
   const setLoggedUser = useSetRecoilState(user);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [passVisible, setPassVisible] = useState({
+    password: false,
+    confirmPassword: false,
+  });
 
   const { setUserInfo } = useGetUser();
 
@@ -187,17 +197,32 @@ const Home: NextPage = () => {
                     placeholder='example@example.com'
                   />
                 </div>
-                <div className='flex flex-col gap-2 mb-4'>
+                <div className='relative flex flex-col gap-2 mb-4'>
                   <label htmlFor='' className='text-white-200 text-xs'>
                     Senha
                   </label>
                   <Input
                     icon={<LockKey size={24} />}
                     name='senha'
-                    type='password'
+                    type={`${passVisible.password ? 'text' : 'password'}`}
                     autoComplete='off'
                     placeholder='*********'
                   />
+                  <span
+                    className='absolute right-3 top-10 text-gray-300 cursor-pointer'
+                    onClick={() =>
+                      setPassVisible((prev) => ({
+                        ...prev,
+                        password: !prev.password,
+                      }))
+                    }
+                  >
+                    {passVisible.password ? (
+                      <EyeSlash size={24} weight='fill' />
+                    ) : (
+                      <Eye size={24} weight='fill' />
+                    )}
+                  </span>
                 </div>
                 <Button type='submit' loading={isLoading}>
                   {!isLoading ? 'Entrar na plataforma' : <Loading />}
@@ -232,29 +257,61 @@ const Home: NextPage = () => {
                     placeholder='example@example.com'
                   />
                 </div>
-                <div className='flex flex-col gap-2'>
+                <div className='relative flex flex-col gap-2'>
                   <label htmlFor='' className='text-white-200 text-xs'>
                     Senha
                   </label>
                   <Input
                     icon={<LockKey size={24} />}
                     name='senha'
-                    type='password'
+                    type={`${passVisible.password ? 'text' : 'password'}`}
                     autoComplete='off'
                     placeholder='*********'
                   />
+                  <span
+                    className='absolute right-3 top-10 text-gray-300 cursor-pointer'
+                    onClick={() =>
+                      setPassVisible((prev) => ({
+                        ...prev,
+                        password: !prev.password,
+                      }))
+                    }
+                  >
+                    {passVisible.password ? (
+                      <EyeSlash size={24} weight='fill' />
+                    ) : (
+                      <Eye size={24} weight='fill' />
+                    )}
+                  </span>
                 </div>
-                <div className='flex flex-col gap-2 mb-4'>
+                <div className='relative flex flex-col gap-2 mb-4'>
                   <label htmlFor='' className='text-white-200 text-xs'>
                     Confirmar senha
                   </label>
                   <Input
                     icon={<LockKey size={24} />}
                     name='confirmarSenha'
-                    type='password'
+                    type={`${
+                      passVisible.confirmPassword ? 'text' : 'password'
+                    }`}
                     autoComplete='off'
                     placeholder='*********'
                   />
+                  <span
+                    className='absolute right-3 top-10 text-gray-300 cursor-pointer'
+                    onClick={() =>
+                      setPassVisible((prev) => ({
+                        ...prev,
+                        confirmPassword: !prev.confirmPassword,
+                      }))
+                    }
+                  >
+                    {passVisible.confirmPassword ? (
+                      <EyeSlash size={24} weight='fill' />
+                    ) : (
+                      <Eye size={24} weight='fill' />
+                    )}
+                  </span>
                 </div>
                 <Button type='submit' loading={isLoading}>
                   {!isLoading ? 'Cadastrar' : <Loading />}
