@@ -5,8 +5,11 @@ import { formatDate, sortArrayByDia } from './formataDataVolume';
 export interface Volume {
   id?: string;
   vol: number;
-  dia: string;
+  dia: string | Date;
   treinoId: string;
+  peso?: number;
+  reps?: number;
+  sets?: number;
 }
 
 export async function fetchVolumeByTreino(
@@ -15,7 +18,7 @@ export async function fetchVolumeByTreino(
 ) {
   const { data, error } = await supabase
     .from('Volumes')
-    .select('vol, dia, id, treinoId')
+    .select('vol, dia, id, treinoId, peso, reps, sets')
     .eq('userId', userId);
 
   if (error) {

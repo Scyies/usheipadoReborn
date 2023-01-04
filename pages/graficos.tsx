@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import { Dias } from '.';
 import {
   diasSelectState,
@@ -18,18 +18,19 @@ import {
   Area,
   ResponsiveContainer,
 } from 'recharts';
-import { fetchVolumeByTreino } from '../utils/fetchVolumeByTreino';
+import { fetchVolumeByTreino, Volume } from '../utils/fetchVolumeByTreino';
 import { averageVol } from '../utils/averageVol';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { filteredTreinos, filteredVolume } from '../atom/selectors';
 import { useGetUser } from '../hooks/useGetUser';
-import { useRouter } from 'next/router';
+import { setTodaysDate } from '../utils/setTodaysDate';
 
 export default function Charts() {
   const setDiasSelect = useSetRecoilState(diasSelectState);
   const selectRecoilValue = useRecoilValue(diasSelectState);
   const [diasData, setDiasData] = useState<Dias[]>([]);
+  const [radioFilter, setRadioFilter] = useState('volume');
 
   const setTreinoSelect = useSetRecoilState(treinosSelectState);
 
@@ -46,8 +47,26 @@ export default function Charts() {
 
   const volumesData = useRecoilValue(filteredVolume);
 
+  function handleRadio(event: ChangeEvent<HTMLInputElement>) {
+    setRadioFilter(event.target.value);
+  }
+
+  function maxWeight(volume: Volume[]) {
+    let pesoArr: number[] = [];
+
+    volume.map((vol) => {
+      if (!vol.peso) return pesoArr.push(0);
+      pesoArr.push(vol.peso);
+    });
+
+    const result = pesoArr.length > 0 ? pesoArr : [0];
+
+    return Math.max(...result);
+  }
+
   useEffect(() => {
     fetchDiasData(setDiasData);
+    setTodaysDate(setDiasSelect);
   }, []);
 
   useEffect(() => {
@@ -85,6 +104,52 @@ export default function Charts() {
             selectedValue={treinoSelect}
           />
         </div>
+        <div className='flex gap-2 justify-center mb-8'>
+          <label
+            htmlFor='peso'
+            className='flex gap-2 text-white-200 place-items-center p-2'
+          >
+            <span className='bg-gray-500 h-4 w-4 rounded-full relative'>
+              <span
+                className={`bg-orange-500 h-2 w-2 rounded-full absolute inset-[4px] ${
+                  radioFilter === 'peso' ? 'flex' : 'hidden'
+                }`}
+              ></span>
+            </span>
+            <input
+              type='radio'
+              name='peso'
+              id='peso'
+              className='cursor-pointer hidden'
+              value='peso'
+              checked={radioFilter === 'peso'}
+              onChange={handleRadio}
+            />
+            Peso
+          </label>
+          <label
+            htmlFor='volume'
+            className='flex gap-2 text-white-200 place-items-center p-2'
+          >
+            <span className='bg-gray-500 h-4 w-4 rounded-full relative'>
+              <span
+                className={`bg-orange-500 h-2 w-2 rounded-full absolute inset-[4px] ${
+                  radioFilter === 'volume' ? 'flex' : 'hidden'
+                }`}
+              ></span>
+            </span>
+            <input
+              type='radio'
+              name='volume'
+              id='volume'
+              className='cursor-pointer hidden'
+              value='volume'
+              checked={radioFilter === 'volume'}
+              onChange={handleRadio}
+            />
+            Volume
+          </label>
+        </div>
         <div className='bg-gray-700 rounded overflow-hidden flex justify-center text-black h-[200px] w-[100%]'>
           <ResponsiveContainer width='100%' height='100%'>
             <AreaChart
@@ -99,7 +164,7 @@ export default function Charts() {
             >
               <Area
                 type='monotone'
-                dataKey='vol'
+                dataKey={`${radioFilter === 'volume' ? 'vol' : 'peso'}`}
                 stroke='#35353A'
                 fill='#e44c2e'
               />
@@ -109,8 +174,8 @@ export default function Charts() {
             </AreaChart>
           </ResponsiveContainer>
         </div>
-        <section className='my-8'>
-          <div className='flex items-center gap-4'>
+        <section className='flex flex-col gap-2 my-8'>
+          <div className='grid grid-cols-2 items-center gap-4'>
             <label
               htmlFor=''
               className='text-white-200 font-semibold text-center select-none'
@@ -119,6 +184,17 @@ export default function Charts() {
             </label>
             <div className='bg-orange-500 text-gray-900 rounded w-full h-full px-4 py-3 text-center font-semibold'>
               <p>{averageVol(volumesData)}</p>
+            </div>
+          </div>
+          <div className='grid grid-cols-2 items-center gap-4'>
+            <label
+              htmlFor=''
+              className='text-white-200 font-semibold text-center select-none'
+            >
+              Carga máxima
+            </label>
+            <div className='bg-orange-500 text-gray-900 rounded w-full h-full px-4 py-3 text-center font-semibold'>
+              <p>{maxWeight(volumesData)}</p>
             </div>
           </div>
         </section>

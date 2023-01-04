@@ -14,6 +14,7 @@ import { NewVolumeCard } from '../components/NewVolumeCard';
 import { filteredTreinos } from '../atom/selectors';
 import { useGetUser } from '../hooks/useGetUser';
 import { useRouter } from 'next/router';
+import { setTodaysDate } from '../utils/setTodaysDate';
 
 export interface VolumeInput {
   name?: string;
@@ -39,7 +40,7 @@ export default function Volume() {
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const router = useRouter();
+  const setDiasSelect = useSetRecoilState(diasSelectState);
 
   const [inputFields, setInputFields] = useState<VolumeInput>({
     name: '',
@@ -114,6 +115,7 @@ export default function Volume() {
 
   useEffect(() => {
     fetchDiasData(setDiasData);
+    setTodaysDate(setDiasSelect);
   }, []);
   useEffect(() => {
     if (userIdValue) {

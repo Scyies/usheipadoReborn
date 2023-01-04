@@ -12,7 +12,6 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { Loading } from '../components/Loading';
 import { useGetUser } from '../hooks/useGetUser';
-import { useRouter } from 'next/router';
 import { setTodaysDate } from '../utils/setTodaysDate';
 
 export default function NovoTreino() {
@@ -81,6 +80,7 @@ export default function NovoTreino() {
 
   useEffect(() => {
     fetchDiasData(setDiasData);
+    setTodaysDate(setDiasSelect);
   }, []);
 
   return (

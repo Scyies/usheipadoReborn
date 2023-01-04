@@ -4,8 +4,6 @@ import Image from 'next/image';
 import Logo from '../assets/logo.svg';
 import classNames from 'classnames';
 import { supabase } from '../supa';
-import { useSetRecoilState } from 'recoil';
-import { user } from '../atom/atom';
 import { useGetUser } from '../hooks/useGetUser';
 
 export default function Header() {

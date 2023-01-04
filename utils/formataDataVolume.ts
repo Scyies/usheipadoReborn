@@ -3,13 +3,16 @@ import { Volume } from './fetchVolumeByTreino';
 interface VolumeTest {
   id?: string;
   vol: number;
-  dia: Date;
+  dia: string | Date;
   treinoId: string;
+  peso?: number;
+  reps?: number;
+  sets?: number;
 }
 
 export function formatDate(volumeData: VolumeTest[]) {
-  const dataArr: Volume[] = [];
-  volumeData.map((item: any) => {
+  const dataArr: VolumeTest[] = [];
+  volumeData.map((item) => {
     const date = new Date(item.dia);
     const vol: number = item.vol;
 
@@ -26,6 +29,9 @@ export function formatDate(volumeData: VolumeTest[]) {
       vol,
       id: item.id,
       treinoId: item.treinoId,
+      peso: item.peso,
+      reps: item.reps,
+      sets: item.sets,
     });
   });
   return dataArr;
@@ -41,6 +47,9 @@ export function sortArrayByDia(volumeData: Volume[]) {
       vol: item.vol,
       id: item.id,
       treinoId: item.treinoId,
+      peso: item.peso,
+      reps: item.reps,
+      sets: item.sets,
     });
   });
   const volumeSorteado = sortedArr.sort(
